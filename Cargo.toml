@@ -5,3 +5,4 @@ authors = ["jan Nils Ferner <jn_ferner@hotmail.de>"]
 
 [dependencies]
 mio = "*"
+http-muncher = "*"

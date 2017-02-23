@@ -1,8 +1,11 @@
 extern crate chat;
-extern crate mio;
 
+extern crate mio;
 use mio::*;
 use mio::tcp::{TcpListener, TcpStream};
+
+extern crate http_muncher;
+use http_muncher::{Parser, ParserHandler};
 
 fn main() {
     // Setup some tokens to allow us to identify which event is
