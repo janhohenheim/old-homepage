@@ -1,57 +1,28 @@
-extern crate chat;
+// Generate an identity like so:
+//
+// ```bash
+// openssl req -x509 -newkey rsa:4096 -nodes -keyout localhost.key -out localhost.crt -days 3650
+// openssl pkcs12 -export -out identity.p12 -inkey localhost.key -in localhost.crt --password mypass
+//
+// ```
 
-extern crate mio;
-use mio::*;
-use mio::tcp::{TcpListener, TcpStream};
-
-extern crate http_muncher;
-use http_muncher::{Parser, ParserHandler};
+extern crate iron;
+extern crate hyper_native_tls;
 
 fn main() {
-    // Setup some tokens to allow us to identify which event is
-    // for which socket.
-    const SERVER: Token = Token(0);
-    const CLIENT: Token = Token(1);
+    // Avoid unused errors due to conditional compilation ('native-tls-example' feature is not default)
+    use hyper_native_tls::NativeTlsServer;
+    use iron::{Iron, Request, Response};
+    use iron::status;
+    use std::result::Result;
 
-    let addr = "127.0.0.1:13265".parse().unwrap();
+    let ssl = NativeTlsServer::new("identity.p12", "mypass").unwrap();
 
-    // Setup the server socket
-    let server = TcpListener::bind(&addr).unwrap();
-
-    // Create an poll instance
-    let poll = Poll::new().unwrap();
-
-    // Start listening for incoming connections
-    poll.register(&server, SERVER, Ready::readable(),
-                  PollOpt::edge()).unwrap();
-
-    // Setup the client socket
-    let sock = TcpStream::connect(&addr).unwrap();
-
-    // Register the socket
-    poll.register(&sock, CLIENT, Ready::readable(),
-                  PollOpt::edge()).unwrap();
-
-    // Create storage for events
-    let mut events = Events::with_capacity(1024);
-
-    loop {
-        poll.poll(&mut events, None).unwrap();
-
-        for event in events.iter() {
-            match event.token() {
-                SERVER => {
-                    // Accept and drop the socket immediately, this will close
-                    // the socket and notify the client of the EOF.
-                    let _ = server.accept();
-                }
-                CLIENT => {
-                    // The server just shuts down the socket, let's just exit
-                    // from our event loop.
-                    return;
-                }
-                _ => unreachable!(),
-            }
-        }
+    match Iron::new(|_: &mut Request| {
+        Ok(Response::with((status::Ok, "Hello world!")))
+    }).https("127.0.0.1:3000", ssl) {
+        Result::Ok(listening) => println!("{:?}", listening),
+        Result::Err(err) => panic!("{:?}", err),
     }
+    // curl -vvvv https://127.0.0.1:3000/ -k
 }

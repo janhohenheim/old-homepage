@@ -1,8 +1,8 @@
 [package]
 name = "chat"
 version = "0.1.0"
-authors = ["jan Nils Ferner <jn_ferner@hotmail.de>"]
+authors = ["Jan Nils Ferner <jn_ferner@hotmail.de>"]
 
 [dependencies]
-mio = "*"
-http-muncher = "*"
+iron = "*"
+hyper-native-tls = "*"
