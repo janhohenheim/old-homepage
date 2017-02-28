@@ -19,6 +19,7 @@ fn main() {
     let ssl = NativeTlsServer::new("identity.p12", "mypass").unwrap();
 
     match Iron::new(|_: &mut Request| {
+        println!("Got an incoming connection!");
         Ok(Response::with((status::Ok, "Hello world!")))
     }).https("127.0.0.1:3000", ssl) {
         Result::Ok(listening) => println!("{:?}", listening),
