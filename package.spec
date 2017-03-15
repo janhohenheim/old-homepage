@@ -20,7 +20,7 @@ cargo build --release
 install -m 755 -d ${RPM_BUILD_ROOT}/usr/bin
 install -m 755 -d ${RPM_BUILD_ROOT}/etc/systemd/system
 cp target/release/chat ${RPM_BUILD_ROOT}/usr/bin/chat
-cp res ${RPM_BUILD_ROOT}/usr/bin/res
+cp -R res ${RPM_BUILD_ROOT}/usr/bin/res
 cp contrib/chat.service ${RPM_BUILD_ROOT}/etc/systemd/system/
 
 %post
@@ -33,5 +33,6 @@ rm -rf ${RPM_BUILD_DIR}
 
 %files
 /usr/bin/chat
+/usr/bin/res
 /etc/systemd/system/chat.service
 
