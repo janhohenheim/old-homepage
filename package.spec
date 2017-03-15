@@ -1,5 +1,5 @@
 Name: millionaire
-Version: 0.3.0
+Version: 0.4.0
 Release: 1
 Summary: Web version of "Who Wants to Be a Millionaire?"
 License: AGPL3.0
@@ -17,10 +17,10 @@ cp -R ${RPM_SOURCE_DIR}/contrib ${RPM_BUILD_DIR}
 cargo build --release
 
 %install
-install -m 755 -d ${RPM_BUILD_ROOT}/usr/bin
+install -m 755 -d ${RPM_BUILD_ROOT}/opt/chat
 install -m 755 -d ${RPM_BUILD_ROOT}/etc/systemd/system
-cp target/release/chat ${RPM_BUILD_ROOT}/usr/bin/chat
-cp -R res ${RPM_BUILD_ROOT}/usr/bin/res
+cp target/release/chat ${RPM_BUILD_ROOT}/opt/chat/
+cp -R res ${RPM_BUILD_ROOT}/opt/chat/
 cp contrib/chat.service ${RPM_BUILD_ROOT}/etc/systemd/system/
 
 %post
@@ -32,7 +32,6 @@ rm -rf ${RPM_BUILD_ROOT}
 rm -rf ${RPM_BUILD_DIR}
 
 %files
-/usr/bin/chat
-/usr/bin/res/
+/opt/chat/
 /etc/systemd/system/chat.service
 
