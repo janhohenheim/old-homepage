@@ -1,5 +1,5 @@
 Name: millionaire
-Version: 0.4.2
+Version: 0.4.3
 Release: 1
 Summary: Web version of "Who Wants to Be a Millionaire?"
 License: AGPL3.0
