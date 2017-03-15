@@ -1,20 +1,28 @@
 extern crate iron;
+#[macro_use]
+extern crate mime;
+#[macro_use]
+extern crate router;
 extern crate hyper_native_tls;
 
-use iron::mime::{Mime, TopLevel, SubLevel};
-use iron::headers::ContentType;
-use iron::{Iron, Request, Response, method};
-use iron::status;
-use std::result::Result;
+use iron::{Iron, Request, Response, status, IronResult};
+use router::{Router};
 
 fn main() {
-    match Iron::new(|request: &mut Request| {
-        println!("Got an incoming connection!");
-        let mut response = Response::with((status::Ok, "<h1>Hello world!</h1><br /><h2>meeemes</h2><br/>:)"));
-        response.headers.set(ContentType(Mime(TopLevel::Text, SubLevel::Html, vec![])));
-        Ok(response)
-    }).http("127.0.0.1:8080") {
-        Result::Ok(listening) => println!("{:?}", listening),
-        Result::Err(err) => panic!("{:?}", err),
-    }
+    let router = router!(root: get "/" => handle_root,
+                         query: get "/:query" => handle_query);
+    Iron::new(router).http("127.0.0.1:8080").unwrap();
+}
+
+fn handle_root(_: &mut Request) -> IronResult<Response> {
+    let content_type = mime!(Text / Html);
+    Ok(Response::with((content_type,
+                       status::Ok,
+                       "<h1>Hello world!</h1><br /><h2>meeemes</h2><br/>:)")))
+}
+
+fn handle_query(req: &mut Request) -> IronResult<Response> {
+    let ref query = req.extensions.get::<Router>()
+        .unwrap().find("query").unwrap_or("/");
+    Ok(Response::with((status::Ok, *query)))
 }

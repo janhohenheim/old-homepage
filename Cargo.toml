@@ -5,6 +5,8 @@ authors = ["Jan Nils Ferner <jn_ferner@hotmail.de>"]
 
 [dependencies]
 iron = "*"
+mime = "*"
+router = "*"
 hyper-native-tls = "*"
 diesel = "*"
 postgres = "*"
