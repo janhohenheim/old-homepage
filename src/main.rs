@@ -6,7 +6,7 @@ extern crate router;
 extern crate hyper_native_tls;
 
 use iron::{Iron, Request, Response, status, IronResult};
-use router::{Router};
+use router::Router;
 
 fn main() {
     let router = router!(root: get "/" => handle_root,
@@ -22,7 +22,10 @@ fn handle_root(_: &mut Request) -> IronResult<Response> {
 }
 
 fn handle_query(req: &mut Request) -> IronResult<Response> {
-    let query = req.extensions.get::<Router>()
-        .unwrap().find("query").unwrap_or("/");
+    let query = req.extensions
+        .get::<Router>()
+        .unwrap()
+        .find("query")
+        .unwrap_or("/");
     Ok(Response::with((status::Ok, query)))
 }
