@@ -33,6 +33,6 @@ rm -rf ${RPM_BUILD_DIR}
 
 %files
 /usr/bin/chat
-/usr/bin/res
+/usr/bin/res/
 /etc/systemd/system/chat.service
 
