@@ -1,5 +1,5 @@
-# chat.rs 
+# homepage
 [![Build Status](https://travis-ci.org/SirRade/chat.rs.svg?branch=master)](https://travis-ci.org/SirRade/chat.rs)
 
-Chat program using websockets in rust.  
-Following [this](https://nbaksalyar.github.io/2015/07/10/writing-chat-in-rust.html#event-loop) tutorial.
+My homepage, representing my learning process with rust, iron and web in general.  
+found at www.jnferner.com, hosted by [DigitalOcean](https://m.do.co/c/bac052f0a30b).
