@@ -10,3 +10,6 @@ router = "*"
 diesel = "*"
 postgres = "*"
 handlebars-iron = "*"
+serde = "*"
+serde_json = "*"
+
