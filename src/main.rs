@@ -3,7 +3,6 @@ extern crate iron;
 extern crate mime;
 #[macro_use]
 extern crate router;
-extern crate hyper_native_tls;
 
 use iron::{Iron, Request, Response, status, IronResult};
 use router::Router;

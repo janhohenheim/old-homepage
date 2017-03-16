@@ -7,6 +7,6 @@ authors = ["Jan Nils Ferner <jn_ferner@hotmail.de>"]
 iron = "*"
 mime = "*"
 router = "*"
-hyper-native-tls = "*"
 diesel = "*"
 postgres = "*"
+handlebars-iron = "*"
