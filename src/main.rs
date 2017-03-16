@@ -14,7 +14,7 @@ fn main() {
     let router = router!(root: get "/" => handle_root,
                          query: get "/:query" => handle_query,
                          quiz: get "/quiz" => handle_quiz);
-    Iron::new(router).http("127.0.0.1:8080").unwrap();
+    Iron::new(router).http("localhost:8080").unwrap();
 }
 
 fn handle_root(_: &mut Request) -> IronResult<Response> {
