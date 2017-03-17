@@ -12,7 +12,7 @@ use std::fs::File;
 
 fn main() {
     let router = router!(root: get "/" => handle_root,
-                         query: get "/:query" => handle_query,
+                         contact: get "/contact" => handle_contact,
                          quiz: get "/quiz" => handle_quiz);
     Iron::new(router).http("localhost:8080").unwrap();
 }
@@ -23,13 +23,8 @@ fn handle_root(_: &mut Request) -> IronResult<Response> {
     Ok(Response::with((content_type, status::Ok, site)))
 }
 
-fn handle_query(req: &mut Request) -> IronResult<Response> {
-    let query = req.extensions
-        .get::<Router>()
-        .unwrap()
-        .find("query")
-        .unwrap_or("/");
-    Ok(Response::with((status::Ok, query)))
+fn handle_contact(req: &mut Request) -> IronResult<Response> {
+    Ok(Response::with((status::Ok, "Ferner Fanclub")))
 }
 
 fn handle_quiz(_: &mut Request) -> IronResult<Response> {
