@@ -2,6 +2,10 @@
 name = "chat"
 version = "0.4.3"
 authors = ["Jan Nils Ferner <jn_ferner@hotmail.de>"]
+readme = "README.md"
+homepage = "jnferner.com"
+repository = "git@github.com:SirRade/homepage.git"
+license = "AGPL-3.0"
 
 [dependencies]
 iron = "*"
@@ -11,5 +15,15 @@ diesel = "*"
 postgres = "*"
 handlebars-iron = "*"
 serde = "*"
+serde_derive = "*"
 serde_json = "*"
 
+[features]
+default = ["handlebars-iron/unstable"]
+
+[badges]
+travis-ci = { repository = "https://travis-ci.org/SirRade/chat.rs" }
+
+[package.metadata.release]
+sign-commit = true
+upload-doc = true
