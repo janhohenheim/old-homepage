@@ -28,7 +28,7 @@ fn handle_contact(req: &mut Request) -> IronResult<Response> {
 }
 
 fn handle_quiz(_: &mut Request) -> IronResult<Response> {
-    Ok(Response::with((status::Ok, "Quizbois")))
+    Ok(Response::with((status::Ok, "Quizboiss")))
 }
 
 fn get_site(path: &str) -> String {
