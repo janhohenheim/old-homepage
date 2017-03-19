@@ -1,5 +1,5 @@
 Name: jnferner
-Version: 0.5.0
+Version: 0.5.1
 Release: 1
 Summary: homepage of Jan Nils Ferner
 License: AGPL3.0
@@ -20,7 +20,7 @@ install -m 755 -d ${RPM_BUILD_ROOT}/opt/homepage
 install -m 755 -d ${RPM_BUILD_ROOT}/etc/systemd/system
 install -m 755 -d ${RPM_BUILD_ROOT}/var/www/html
 cp target/release/homepage ${RPM_BUILD_ROOT}/opt/homepage/
-cp -R res/* ${RPM_BUILD_ROOT}/var/www/html/
+cp -R res ${RPM_BUILD_ROOT}/var/www/html/
 cp -R res ${RPM_BUILD_ROOT}/opt/homepage/
 
 %post

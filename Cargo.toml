@@ -1,6 +1,6 @@
 [package]
 name = "homepage"
-version = "0.5.0"
+version = "0.5.1"
 authors = ["Jan Nils Ferner <jn_ferner@hotmail.de>"]
 readme = "README.md"
 homepage = "jnferner.com"
