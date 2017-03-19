@@ -17,23 +17,23 @@ cp -R ${RPM_SOURCE_DIR}/contrib ${RPM_BUILD_DIR}
 cargo build --release
 
 %install
-install -m 755 -d ${RPM_BUILD_ROOT}/opt/chat
+install -m 755 -d ${RPM_BUILD_ROOT}/opt/homepage
 install -m 755 -d ${RPM_BUILD_ROOT}/etc/systemd/system
 install -m 755 -d ${RPM_BUILD_ROOT}/var/www/html
-cp target/release/chat ${RPM_BUILD_ROOT}/opt/chat/
+cp target/release/homepage ${RPM_BUILD_ROOT}/opt/homepage/
 cp -R res/* ${RPM_BUILD_ROOT}/var/www/html/
-cp -R res ${RPM_BUILD_ROOT}/opt/chat/
-cp contrib/chat.service ${RPM_BUILD_ROOT}/etc/systemd/system/
+cp -R res ${RPM_BUILD_ROOT}/opt/homepage/
+cp contrib/homepage.service ${RPM_BUILD_ROOT}/etc/systemd/system/
 
 %post
 systemctl daemon-reload
-systemctl restart chat
+systemctl restart homepage
 
 %clean
 rm -rf ${RPM_BUILD_ROOT}
 rm -rf ${RPM_BUILD_DIR}
 
 %files
-/opt/chat/
-/etc/systemd/system/chat.service
+/opt/homepage/
+/etc/systemd/system/homepage.service
 /var/www/html/
