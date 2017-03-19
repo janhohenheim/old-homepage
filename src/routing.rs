@@ -27,10 +27,10 @@ pub fn create_chain() -> Chain {
 }
 
 fn handle_root(_: &mut Request) -> IronResult<Response> {
-    let mut resp = Response::new();
     let site = get_site("index.html");
-    resp.set_mut(make_site(Section::Home, &site)).set_mut(status::Ok);
-    Ok(resp)
+    let site_template = make_site(Section::Home, &site);
+    Ok(Response::with((site_template,
+                       status::Ok)))
 }
 
 fn handle_contact(_: &mut Request) -> IronResult<Response> {
