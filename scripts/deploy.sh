@@ -1,7 +1,6 @@
 git pull
-rm -f rpm/x86_64/millionaire-*.rpm
+rm -f rpm/x86_64/jnferner-*.rpm
 ./scripts/package.sh
-ssh jnferner.com rm -f 'millionaire-*.rpm'
-scp rpm/x86_64/millionaire-*.rpm jnferner.com:~/
-ssh jnferner.com rpm -Uhv 'millionaire-*.rpm'
-
+ssh root@jnferner.com rm -f 'jnferner-*.rpm'
+scp rpm/x86_64/jnferner-*.rpm root@jnferner.com:~/
+ssh root@jnferner.com rpm -Uhv 'jnferner-*.rpm'
