@@ -4,16 +4,15 @@ extern crate router;
 extern crate staticfile;
 
 use std;
-use iron::{Iron, Request, Response, status, IronResult};
+use iron::{Request, Response, status, IronResult};
 use iron::prelude::*;
 use std::io::prelude::*;
 use std::fs::File;
 use std::path::Path;
-use router::Router;
 use self::mount::Mount;
 use self::staticfile::Static;
 
-use ::templating::{make_site, Section};
+use templating::{make_site, Section};
 
 pub fn create_chain() -> Chain {
 
@@ -22,17 +21,15 @@ pub fn create_chain() -> Chain {
                          quiz: get "/quiz" => handle_quiz);
 
     let mut mount = Mount::new();
-    mount
-        .mount("/", router)
-        .mount("/res/public/", Static::new(Path::new("res/public/")));
+    mount.mount("/", router).mount("/res/public/", Static::new(Path::new("res/public/")));
 
     Chain::new(mount)
 }
 
 fn handle_root(_: &mut Request) -> IronResult<Response> {
     let mut resp = Response::new();
-    let content_type = mime!(Text / Html);
-    resp.set_mut(make_site(Section::Home, "Ayyyy")).set_mut(status::Ok);
+    let site = get_site("index.html");
+    resp.set_mut(make_site(Section::Home, &site)).set_mut(status::Ok);
     Ok(resp)
 }
 
@@ -45,8 +42,11 @@ fn handle_quiz(_: &mut Request) -> IronResult<Response> {
 }
 
 
+
 fn get_site(path: &str) -> String {
-    match File::open(path) {
+    let mut whole_path = "res/templates/".to_string();
+    whole_path.push_str(path);
+    match File::open(&whole_path) {
         Err(_) => return get_site_not_found(path),
         Ok(mut val) => {
             let mut site = String::new();

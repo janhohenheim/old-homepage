@@ -1,7 +1,7 @@
 extern crate iron;
 extern crate homepage;
 
-use iron::{Iron};
+use iron::Iron;
 use homepage::*;
 
 fn main() {
@@ -11,5 +11,3 @@ fn main() {
     }
     Iron::new(chain).http("localhost:8080").unwrap();
 }
-
-

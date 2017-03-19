@@ -8,14 +8,15 @@ extern crate serde_json;
 
 use self::iron::prelude::*;
 use self::hbs::{Template, HandlebarsEngine, DirectorySource, SourceError};
-use self::handlebars::{Handlebars, RenderContext, RenderError, Helper, to_json};
-use self::serde_json::value::{Value, Map};
+use self::handlebars::to_json;
+use self::serde_json::value::Map;
+
 
 #[derive(Serialize, Debug, PartialEq, Eq)]
 pub enum Section {
     Home,
     Quiz,
-    Contact
+    Contact,
 }
 
 pub fn link_to_chain(chain: &mut Chain) -> Result<&mut Chain, SourceError> {
@@ -38,27 +39,29 @@ pub fn make_site(section: Section, content: &str) -> Template {
     let mut sections = get_sections();
     set_active_section(&mut sections, section);
 
-    Template::new("frame", content)
+    let mut data = Map::new();
+    data.insert("sections".to_string(), to_json(&sections));
+    data.insert("content".to_string(), to_json(&content.to_owned()));
+
+    Template::new("frame", data)
 }
 
-fn get_sections() -> Vec<SectionData>{
-    vec![
-        SectionData {
-            name: Section::Home,
-            route: "/".to_string(),
-            is_active: false,
-        },
-        SectionData {
-            name: Section::Quiz,
-            route: "/quiz".to_string(),
-            is_active: false,
-        },
-        SectionData {
-            name: Section::Contact,
-            route: "/contact".to_string(),
-            is_active: false,
-        },
-    ]
+fn get_sections() -> Vec<SectionData> {
+    vec![SectionData {
+             name: Section::Home,
+             route: "/".to_string(),
+             is_active: false,
+         },
+         SectionData {
+             name: Section::Quiz,
+             route: "/quiz".to_string(),
+             is_active: false,
+         },
+         SectionData {
+             name: Section::Contact,
+             route: "/contact".to_string(),
+             is_active: false,
+         }]
 }
 
 fn set_active_section(sections: &mut Vec<SectionData>, active: Section) {
