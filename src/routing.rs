@@ -29,7 +29,7 @@ fn handle_root(_: &mut Request) -> IronResult<Response> {
 }
 
 fn handle_contact(_: &mut Request) -> IronResult<Response> {
-    respond_with_text(Section::Contact, "Ferner Fanclub")
+    respond_with_file(Section::Contact, "contact/contact.html")
 }
 
 fn handle_quiz(_: &mut Request) -> IronResult<Response> {
