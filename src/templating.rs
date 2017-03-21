@@ -46,7 +46,7 @@ pub fn make_site(section: Section, content: &str) -> Template {
     data.insert("sections".to_string(), to_json(&sections));
     data.insert("content".to_string(), to_json(&content.to_owned()));
 
-    Template::new("frame", data)
+    Template::new("template", data)
 }
 
 pub fn make_site_from_file(section: Section, path: &str) -> Template {

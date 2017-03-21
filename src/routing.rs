@@ -17,7 +17,9 @@ pub fn create_chain() -> Chain {
                          quiz: get "/quiz" => handle_quiz);
 
     let mut mount = Mount::new();
-    mount.mount("/", router).mount("/res/public/", Static::new(Path::new("res/public/")));
+    mount.mount("/", router);
+    mount.mount("/css", Static::new(Path::new("res/public/css")))
+         .mount("/js", Static::new(Path::new("res/public/js")));
 
     Chain::new(mount)
 }
