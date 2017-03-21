@@ -3,8 +3,7 @@ Version: 0.5.6
 Release: 1
 Summary: homepage of Jan Nils Ferner
 License: AGPL3.0
-BuildArch: x86_64 
-Requires: openssl
+BuildArch: x86_64
 
 %description
 homepage of Jan Nils Ferner
