@@ -36,12 +36,10 @@ fn handle_quiz(_: &mut Request) -> IronResult<Response> {
 
 fn respond_with_text(section: Section, content: &str) -> IronResult<Response> {
     let site_template = make_site(section, content);
-    Ok(Response::with((site_template,
-                       status::Ok)))
+    Ok(Response::with((site_template, status::Ok)))
 }
 
 fn respond_with_file(section: Section, filename: &str) -> IronResult<Response> {
     let site_template = make_site_from_file(section, filename);
-    Ok(Response::with((site_template,
-                       status::Ok)))
+    Ok(Response::with((site_template, status::Ok)))
 }
