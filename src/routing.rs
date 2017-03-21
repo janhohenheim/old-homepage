@@ -33,7 +33,7 @@ fn handle_contact(_: &mut Request) -> IronResult<Response> {
 }
 
 fn handle_quiz(_: &mut Request) -> IronResult<Response> {
-    respond_with_text(Section::Quiz, "Quizbois")
+    respond_with_file(Section::Quiz, "quiz/quiz.hbs")
 }
 
 fn respond_with_text(section: Section, content: &str) -> IronResult<Response> {

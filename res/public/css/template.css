@@ -1,0 +1,44 @@
+* {
+    box-sizing: inherit;
+}
+
+html {
+    box-sizing: border-box;
+}
+
+body {
+    padding-top: 50px;
+}
+
+.starter-template {
+    padding: 40px 15px;
+    text-align: left;
+}
+
+.radio-button-wrap > input {
+    display: none;
+}
+
+.radio-button {
+    display: inline-block;
+    border-radius: 13px;
+    border: double;
+    color: white;
+    background: #ffb358;
+    width: 300px;
+    padding: 10px 15px;
+    text-align: center;
+
+}
+
+input:checked + .radio-button {
+    background: #ff7711;
+}
+
+input:hover:checked + .radio-button {
+    background: #ff7711;
+}
+
+input:hover + .radio-button {
+    background: #ff943e;
+}
