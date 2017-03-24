@@ -22,7 +22,6 @@ serde_derive = "*"
 serde_json = "*"
 iron-sessionstorage = { version = "*", features = ["redis-backend"] }
 
-
 [badges]
 travis-ci = { repository = "https://travis-ci.org/SirRade/chat.rs" }
 
