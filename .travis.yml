@@ -3,6 +3,14 @@ rust:
   - stable
   - beta
   - nightly
+
+script:
+  - cargo build
+  - cargo test
+
 matrix:
-  allow_failures:
-    - rust: nightly
+  include:
+  - rust: nightly
+    env: CLIPPY=YESPLEASE
+    script:
+    - cargo rustc --lib --features "lint" -- -Zno-trans

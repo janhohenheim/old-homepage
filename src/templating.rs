@@ -38,7 +38,7 @@ struct SectionData {
 }
 
 
-pub fn make_site(section: Section, content: &str) -> Template {
+pub fn make_site(section: &Section, content: &str) -> Template {
     let mut sections = get_sections();
     set_active_section(&mut sections, section);
 
@@ -49,8 +49,8 @@ pub fn make_site(section: Section, content: &str) -> Template {
     Template::new("template", data)
 }
 
-pub fn make_site_from_file(section: Section, path: &str) -> Template {
-    make_site(section, &get_site(&path))
+pub fn make_site_from_file(section: &Section, path: &str) -> Template {
+    make_site(section, &get_site(path))
 }
 
 fn get_sections() -> Vec<SectionData> {
@@ -71,9 +71,9 @@ fn get_sections() -> Vec<SectionData> {
          }]
 }
 
-fn set_active_section(sections: &mut Vec<SectionData>, active: Section) {
+fn set_active_section(sections: &mut Vec<SectionData>, active: &Section) {
     for section in sections {
-        if section.name == active {
+        if section.name == *active {
             section.is_active = true
         }
     }
@@ -83,12 +83,12 @@ fn get_site(path: &str) -> String {
     let mut whole_path = "res/templates/".to_string();
     whole_path.push_str(path);
     match File::open(&whole_path) {
-        Err(_) => return get_site_not_found(path),
+        Err(_) => get_site_not_found(path),
         Ok(mut val) => {
             let mut site = String::new();
             match val.read_to_string(&mut site) {
-                Err(err) => return get_site_err(err),
-                Ok(_) => return site,
+                Err(err) => get_site_err(&err),
+                Ok(_) => site,
             }
         }
     }
@@ -100,7 +100,7 @@ fn get_site_not_found(path: &str) -> String {
     msg
 }
 
-fn get_site_err<T: std::fmt::Display>(err: T) -> String {
+fn get_site_err<T: std::fmt::Display>(err: &T) -> String {
     let msg = format!("Server error happened\n{}", err);
     println!("{}", msg);
     msg

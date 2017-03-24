@@ -8,7 +8,7 @@ use iron::prelude::*;
 use self::mount::Mount;
 use self::staticfile::Static;
 use std::path::Path;
-use templating::{make_site, make_site_from_file, Section};
+use templating::{make_site_from_file, Section};
 
 pub fn create_chain() -> Chain {
 
@@ -19,29 +19,24 @@ pub fn create_chain() -> Chain {
     let mut mount = Mount::new();
     mount.mount("/", router);
     mount.mount("/css", Static::new(Path::new("res/public/css")))
-         .mount("/js", Static::new(Path::new("res/public/js")));
+        .mount("/js", Static::new(Path::new("res/public/js")));
 
     Chain::new(mount)
 }
 
 fn handle_root(_: &mut Request) -> IronResult<Response> {
-    respond_with_file(Section::Home, "index.html")
+    respond_with_file(&Section::Home, "index.html")
 }
 
 fn handle_contact(_: &mut Request) -> IronResult<Response> {
-    respond_with_file(Section::Contact, "contact/contact.html")
+    respond_with_file(&Section::Contact, "contact/contact.html")
 }
 
 fn handle_quiz(_: &mut Request) -> IronResult<Response> {
-    respond_with_file(Section::Quiz, "quiz/quiz.hbs")
+    respond_with_file(&Section::Quiz, "quiz/quiz.hbs")
 }
 
-fn respond_with_text(section: Section, content: &str) -> IronResult<Response> {
-    let site_template = make_site(section, content);
-    Ok(Response::with((site_template, status::Ok)))
-}
-
-fn respond_with_file(section: Section, filename: &str) -> IronResult<Response> {
+fn respond_with_file(section: &Section, filename: &str) -> IronResult<Response> {
     let site_template = make_site_from_file(section, filename);
     Ok(Response::with((site_template, status::Ok)))
 }

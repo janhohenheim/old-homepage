@@ -21,6 +21,10 @@ serde = "*"
 serde_derive = "*"
 serde_json = "*"
 iron-sessionstorage = { version = "*", features = ["redis-backend"] }
+clippy = { version = "=0.0.118", optional = true }
+
+[features]
+lint = ["clippy"]
 
 [badges]
 travis-ci = { repository = "https://travis-ci.org/SirRade/chat.rs" }
