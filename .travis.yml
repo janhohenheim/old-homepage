@@ -8,7 +8,7 @@ sudo: true
 dist: trusty
 
 cache:
-  - cargo
+    cargo: true
     directories:
     - $HOME/openssl
 
@@ -21,7 +21,17 @@ install:
   - sudo apt-get install libssl-dev
   - sudo apt-get install pkg-config
   - cd
-  - if [ ! -d "openssl" ]; then sudo apt-get remove openssl; git clone git://git.openssl.org/openssl.git ;  cd openssl;  ./config;  make;   sudo make install;   openssl version;   sudo apt-get autoremove;  cd ..;  fi
+  - if [ ! -d "openssl" ]; then
+      sudo apt-get remove openssl;
+      git clone git://git.openssl.org/openssl.git ;
+      cd openssl;
+      ./config;
+      make;
+      sudo make install;
+      sudo apt-get autoremove;
+      openssl version;
+      cd ..;
+    fi
 
 before_script:
   #- diesel database setup
