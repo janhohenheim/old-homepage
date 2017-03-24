@@ -15,14 +15,12 @@ mount = "*"
 staticfile = "*"
 diesel = "*"
 postgres = "*"
-handlebars-iron = "*"
+handlebars-iron = { version = "*", features = ["unstable"] }
 handlebars = "*"
 serde = "*"
 serde_derive = "*"
 serde_json = "*"
-
-[features]
-default = ["handlebars-iron/unstable"]
+iron-sessionstorage = { version = "*", features = ["redis-backend"] }
 
 [badges]
 travis-ci = { repository = "https://travis-ci.org/SirRade/chat.rs" }
