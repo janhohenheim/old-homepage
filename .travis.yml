@@ -8,7 +8,8 @@ sudo: false
 dist: trusty
 
 install:
-  #- cargo install diesel_cli --debug --no-default-features --features postgres
+  - pip install 'travis-cargo<0.2' --user && export PATH=$HOME/.local/bin:$PATH
+  - cargo install diesel_cli --debug --no-default-features --features postgres
   - export PATH=$HOME/.cargo/bin:$PATH
 
 before_script:
@@ -36,8 +37,10 @@ matrix:
   include:
   - rust: nightly
     env: CLIPPY=YESPLEASE
+    install:
+    - cargo install clippy
     script:
-    - cargo rustc --lib --features "lint" -- -Zno-trans
+    - cargo clippy
 
 env:
   global:
@@ -47,3 +50,4 @@ env:
 notifications:
   email:
     on_success: never
+    
