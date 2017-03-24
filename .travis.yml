@@ -8,10 +8,11 @@ sudo: false
 dist: trusty
 
 install:
-  - cargo install diesel_cli --debug --no-default-features --features postgres && export PATH=$HOME/.cargo/bin:$PATH 
+  #- cargo install diesel_cli --debug --no-default-features --features postgres
+  - export PATH=$HOME/.cargo/bin:$PATH
 
 before_script:
-  - diesel database setup
+  #- diesel database setup
 
 script:
   - cargo build
