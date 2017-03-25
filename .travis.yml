@@ -8,7 +8,6 @@ sudo: true
 dist: trusty
 
 cache:
-    cargo: true
     directories:
     - $HOME/openssl
 
@@ -59,7 +58,7 @@ matrix:
     - rust: nightly
       env: CLIPPY=YESPLEASE
       install:
-        - cargo install --force clippy
+        - cargo install clippy
       script:
         - cargo clippy
 
