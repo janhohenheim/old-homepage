@@ -19,7 +19,7 @@ install:
   - sudo apt-get install gcc
   - sudo apt-get install libssl-dev
   - sudo apt-get install pkg-config
-  - if [ ! -d "openssl" ]; then
+  - if [ ! -d "~/openssl" ]; then
       cd;
       sudo apt-get remove openssl;
       git clone git://git.openssl.org/openssl.git ;
@@ -65,7 +65,7 @@ matrix:
         - sudo apt-get install gcc
         - sudo apt-get install libssl-dev
         - sudo apt-get install pkg-config
-        - if [ ! -d "openssl" ]; then
+        - if [ ! -d "~/openssl" ]; then
             cd;
             sudo apt-get remove openssl;
             git clone git://git.openssl.org/openssl.git ;
