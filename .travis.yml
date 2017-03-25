@@ -59,7 +59,7 @@ matrix:
     - rust: nightly
       env: CLIPPY=YESPLEASE
       install:
-        - cargo install clippy
+        - cargo install --force clippy
       script:
         - cargo clippy
 
