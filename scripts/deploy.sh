@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 git pull
 rm -f rpm/x86_64/jnferner-*.rpm
 ./scripts/package.sh
