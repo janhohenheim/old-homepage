@@ -58,6 +58,26 @@ matrix:
     - rust: nightly
       env: CLIPPY=YESPLEASE
       install:
+        - pip install 'travis-cargo<0.2' --user && export PATH=$HOME/.local/bin:$PATH
+        - cargo install diesel_cli --debug --no-default-features --features postgres
+        - export PATH=$HOME/.cargo/bin:$PATH
+        - sudo apt-get install make
+        - sudo apt-get install gcc
+        - sudo apt-get install libssl-dev
+        - sudo apt-get install pkg-config
+        - cd
+        - if [ ! -d "openssl" ]; then
+            sudo apt-get remove openssl;
+            git clone git://git.openssl.org/openssl.git ;
+            cd openssl;
+            ./config;
+            make;
+            sudo make install;
+            sudo apt-get autoremove;
+            openssl version;
+            cd $TRAVIS_BUILD_DIR/;
+          fi
+
         - cargo install clippy
       script:
         - cargo clippy
