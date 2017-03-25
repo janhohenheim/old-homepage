@@ -4,33 +4,19 @@ rust:
   - stable
   - beta
   - nightly
-sudo: true
+sudo: false
 dist: trusty
 
-cache:
-    directories:
-    - $HOME/openssl
+before_install:
+  - sudo apt-get update -qq
+  - sudo apt-get install -y libssl-dev
+  - sudo apt-get install -y pkg-config
+  - sudo apt-get install -y openssl
 
 install:
   - pip install 'travis-cargo<0.2' --user && export PATH=$HOME/.local/bin:$PATH
   - cargo install diesel_cli --debug --no-default-features --features postgres
   - export PATH=$HOME/.cargo/bin:$PATH
-  - sudo apt-get install make
-  - sudo apt-get install gcc
-  - sudo apt-get install libssl-dev
-  - sudo apt-get install pkg-config
-  - if [ ! -d "~/openssl" ]; then
-      cd;
-      sudo apt-get remove openssl;
-      git clone git://git.openssl.org/openssl.git ;
-      cd openssl;
-      ./config;
-      make;
-      sudo make install;
-      sudo apt-get autoremove;
-      openssl version;
-      cd $TRAVIS_BUILD_DIR/;
-    fi
 
 before_script:
   #- diesel database setup
@@ -57,30 +43,8 @@ matrix:
   include:
     - rust: nightly
       env: CLIPPY=YESPLEASE
-      install:
-        - pip install 'travis-cargo<0.2' --user && export PATH=$HOME/.local/bin:$PATH
-        - cargo install diesel_cli --debug --no-default-features --features postgres
-        - export PATH=$HOME/.cargo/bin:$PATH
-        - sudo apt-get install make
-        - sudo apt-get install gcc
-        - sudo apt-get install libssl-dev
-        - sudo apt-get install pkg-config
-        - if [ ! -d "~/openssl" ]; then
-            cd;
-            sudo apt-get remove openssl;
-            git clone git://git.openssl.org/openssl.git ;
-            cd openssl;
-            ./config;
-            make;
-            sudo make install;
-            sudo apt-get autoremove;
-            openssl version;
-            cd $TRAVIS_BUILD_DIR;
-          fi
-
-        - cargo install clippy
       script:
-        - cargo clippy
+        cargo build --features "clippy"
 
 env:
   global:
