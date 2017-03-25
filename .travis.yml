@@ -30,7 +30,7 @@ install:
       sudo make install;
       sudo apt-get autoremove;
       openssl version;
-      cd ..;
+      cd $TRAVIS_BUILD_DIR/;
     fi
 
 before_script:
