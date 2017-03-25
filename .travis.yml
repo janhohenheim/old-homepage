@@ -20,6 +20,7 @@ install:
   - sudo apt-get install libssl-dev
   - sudo apt-get install pkg-config
   - if [ ! -d "openssl" ]; then
+      cd;
       sudo apt-get remove openssl;
       git clone git://git.openssl.org/openssl.git ;
       cd openssl;
@@ -65,6 +66,7 @@ matrix:
         - sudo apt-get install libssl-dev
         - sudo apt-get install pkg-config
         - if [ ! -d "openssl" ]; then
+            cd;
             sudo apt-get remove openssl;
             git clone git://git.openssl.org/openssl.git ;
             cd openssl;
