@@ -19,7 +19,6 @@ install:
   - sudo apt-get install gcc
   - sudo apt-get install libssl-dev
   - sudo apt-get install pkg-config
-  - cd
   - if [ ! -d "openssl" ]; then
       sudo apt-get remove openssl;
       git clone git://git.openssl.org/openssl.git ;
