@@ -8,7 +8,7 @@ extern crate serde_derive;
 pub mod routing;
 pub mod templating;
 pub mod session;
-pub mod quiz_controller;
+pub mod quiz;
 
 
 #[cfg(test)]

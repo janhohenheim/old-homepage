@@ -9,7 +9,7 @@ use self::mount::Mount;
 use self::staticfile::Static;
 use std::path::{Path};
 use templating::{make_site_from_file, Section};
-use quiz_controller::{start};
+use quiz::controller::{start, start_post};
 
 pub fn create_chain() -> Chain {
 
@@ -41,12 +41,13 @@ fn handle_contact(_: &mut Request) -> IronResult<Response> {
     respond_with_file(Some(&Section::Contact), Path::new("contact/contact.html"))
 }
 
-fn handle_quiz(_: &mut Request) -> IronResult<Response> {
-    respond_with_file(Some(&Section::Quiz), Path::new("quiz/quiz_start.hbs"))
+fn handle_quiz(req: &mut Request) -> IronResult<Response> {
+    let path = start(req)?;
+    respond_with_file(Some(&Section::Quiz), &path)
 }
 
 fn handle_quiz_post(req: &mut Request) -> IronResult<Response> {
-    let path = start(req)?;
+    let path = start_post(req)?;
     respond_with_file(Some(&Section::Quiz), &path)
 }
 
