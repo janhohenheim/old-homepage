@@ -28,7 +28,6 @@ body {
     width: 250px;
     padding: 10px 15px;
     text-align: center;
-
 }
 
 input:checked + .radio-button {

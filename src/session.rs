@@ -14,12 +14,12 @@ use self::redis::{IntoConnectionInfo, ConnectionInfo, RedisResult, ConnectionAdd
 use self::serde_json::{from_str, to_string};
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, Eq)]
-pub struct Login {
-    username: String
+pub struct Player {
+    pub id: u32
 }
 
-impl iron_sessionstorage::Value for Login {
-    fn get_key() -> &'static str { "logged_in_user" }
+impl iron_sessionstorage::Value for Player {
+    fn get_key() -> &'static str { "player" }
     fn into_raw(self) -> String { to_string(&self).unwrap() }
     fn from_raw(value: String) -> Option<Self> {
         if value.is_empty() {
@@ -30,19 +30,6 @@ impl iron_sessionstorage::Value for Login {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, Eq)]
-pub struct Guest;
-impl iron_sessionstorage::Value for Guest {
-    fn get_key() -> &'static str { "guest_user" }
-    fn into_raw(self) -> String { to_string(&self).unwrap() }
-    fn from_raw(value: String) -> Option<Self> {
-        if value.is_empty() {
-            None
-        } else {
-            from_str(&value).ok()
-        }
-    }
-}
 
 pub fn link_to_chain(chain: &mut Chain) -> Result<&mut Chain, SessionError> {
     let connection = RedisConnection::new();
@@ -57,6 +44,7 @@ impl  RedisConnection {
         RedisConnection{}
     }
 }
+
 impl IntoConnectionInfo for RedisConnection {
     fn into_connection_info(self) -> RedisResult<ConnectionInfo> {
         let addr = ConnectionAddr::Tcp("127.0.0.1".to_string(), 6379);

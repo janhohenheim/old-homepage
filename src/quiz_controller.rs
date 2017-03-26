@@ -1,15 +1,15 @@
 extern crate iron;
 extern crate iron_sessionstorage;
 
-use session::Guest;
+use session::Player;
 use self::iron_sessionstorage::traits::*;
 use self::iron::{Request, IronResult};
 use std::path::PathBuf;
 
 pub fn start(req: &mut Request) -> IronResult<PathBuf> {
-    let session = req.session().get::<Guest>()?;
-    if session.is_none() {
-        req.session().set(Guest)?;
+    let player = req.session().get::<Player>()?;
+    if player.is_none() {
+        req.session().set(Player{ id: 0})?;
     }
     Ok(PathBuf::from("quiz/quiz_question.hbs"))
 }
