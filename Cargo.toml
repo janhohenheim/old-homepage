@@ -20,6 +20,7 @@ handlebars = "*"
 serde = "*"
 serde_derive = "*"
 serde_json = "*"
+redis = "*"
 iron-sessionstorage = { version = "*", features = ["redis-backend"] }
 clippy = {version = "*", optional = true}
 

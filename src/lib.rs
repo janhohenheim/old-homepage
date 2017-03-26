@@ -1,17 +1,15 @@
 #![cfg_attr(feature="clippy", feature(plugin))]
 #![cfg_attr(feature="clippy", plugin(clippy))]
-extern crate iron;
+
 #[macro_use]
 extern crate router;
-extern crate handlebars;
-extern crate handlebars_iron as hbs;
-extern crate serde;
-extern crate serde_json;
 #[macro_use]
 extern crate serde_derive;
-
-pub mod templating;
 pub mod routing;
+pub mod templating;
+pub mod session;
+pub mod quiz_controller;
+
 
 #[cfg(test)]
 mod tests {
