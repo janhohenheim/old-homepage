@@ -13,10 +13,12 @@ mime = "*"
 router = "*"
 mount = "*"
 staticfile = "*"
-diesel = "*"
+diesel = { version = "*", features = ["postgres", "serde_json"] }
+diesel_codegen = { version = "*", features = ["postgres"] }
+dotenv = "*"
 postgres = "*"
-handlebars-iron = { version = "*", features = ["unstable"] }
 handlebars = "*"
+handlebars-iron = { version = "*", features = ["unstable"] }
 serde = "*"
 serde_derive = "*"
 serde_json = "*"
