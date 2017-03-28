@@ -24,7 +24,6 @@ before_script:
   - which rustfmt || cargo install rustfmt
 
 script:
-  - cargo fmt -- --write-mode=diff
   - cargo build
   - cargo test
   
@@ -49,7 +48,8 @@ matrix:
     - rust: nightly
       env: CLIPPY=YESPLEASE
       script:
-        cargo build --features "clippy"
+        - cargo fmt -- --write-mode=diff
+        - cargo build --features "clippy"
 
 env:
   global:
