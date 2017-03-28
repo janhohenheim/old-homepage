@@ -1,0 +1,1 @@
+ALTER TABLE round_question DROP answer_id;

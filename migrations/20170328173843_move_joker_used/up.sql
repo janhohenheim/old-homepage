@@ -1,0 +1,2 @@
+ALTER TABLE round DROP COLUMN is_joker_used;
+ALTER TABLE round_question ADD COLUMN is_joker_used BOOLEAN NOT NULL DEFAULT FALSE;
