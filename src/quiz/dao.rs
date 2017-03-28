@@ -1,4 +1,4 @@
-use quiz::model::{Player};
+use quiz::model::Player;
 
 pub fn generate_player_id() -> u32 {
     unimplemented!();
@@ -7,7 +7,5 @@ pub fn generate_player_id() -> u32 {
 
 pub fn get_player(id: u32) -> Player {
     unimplemented!();
-    Player{
-
-    }
+    Player {}
 }

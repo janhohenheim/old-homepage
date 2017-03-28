@@ -9,9 +9,6 @@ pub struct Answer {
     times_chosen: u32,
 }
 
-pub struct Player {
-}
+pub struct Player {}
 
-pub struct Game {
-
-}
+pub struct Game {}

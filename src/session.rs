@@ -15,12 +15,16 @@ use self::serde_json::{from_str, to_string};
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, Eq)]
 pub struct Player {
-    pub id: u32
+    pub id: u32,
 }
 
 impl iron_sessionstorage::Value for Player {
-    fn get_key() -> &'static str { "player" }
-    fn into_raw(self) -> String { to_string(&self).unwrap() }
+    fn get_key() -> &'static str {
+        "player"
+    }
+    fn into_raw(self) -> String {
+        to_string(&self).unwrap()
+    }
     fn from_raw(value: String) -> Option<Self> {
         if value.is_empty() {
             None
@@ -39,9 +43,9 @@ pub fn link_to_chain(chain: &mut Chain) -> Result<&mut Chain, SessionError> {
 }
 
 struct RedisConnection;
-impl  RedisConnection {
+impl RedisConnection {
     fn new() -> RedisConnection {
-        RedisConnection{}
+        RedisConnection {}
     }
 }
 

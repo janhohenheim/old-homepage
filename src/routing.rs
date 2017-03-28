@@ -7,7 +7,7 @@ use self::iron::{Request, Response, status, IronResult};
 use self::iron::prelude::*;
 use self::mount::Mount;
 use self::staticfile::Static;
-use std::path::{Path};
+use std::path::Path;
 use templating::{make_site_from_file, Section};
 use quiz::controller::{start, start_post};
 
