@@ -1,0 +1,1 @@
+ALTER TABLE question RENAME COLUMN question TO text;
