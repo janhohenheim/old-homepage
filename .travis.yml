@@ -9,9 +9,12 @@ dist: trusty
 cache: cargo
 
 before_install:
+# openssl dependencies
   - sudo apt-get install -y libssl-dev
   - sudo apt-get install -y pkg-config
   - sudo apt-get install -y openssl
+# diesel dependencies
+  - sudo apt-get install libpq-dev
 
 install:
   #- pip install 'travis-cargo<0.2' --user && export PATH=$HOME/.local/bin:$PATH
