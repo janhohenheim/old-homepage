@@ -46,7 +46,6 @@ addons:
 matrix:
   include:
     - rust: nightly
-      env: CLIPPY=YESPLEASE
       script:
         - cargo fmt -- --write-mode=diff
         - cargo build --features "clippy"
