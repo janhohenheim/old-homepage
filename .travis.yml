@@ -16,15 +16,12 @@ before_install:
 # diesel dependencies
   - sudo apt-get install libpq-dev
 
-install:
-  #- pip install 'travis-cargo<0.2' --user && export PATH=$HOME/.local/bin:$PATH
-  - cargo install diesel_cli --no-default-features --features postgres
-  - export PATH=$HOME/.cargo/bin:$PATH
-
 before_script:
-  - diesel database setup
-  - export PATH="$PATH:$HOME/.cargo/bin"
+  #- pip install 'travis-cargo<0.2' --user && export PATH=$HOME/.local/bin:$PATH
   - which rustfmt || cargo install rustfmt
+  - which diesel || cargo install diesel_cli --no-default-features --features postgres
+  - export PATH="$PATH:$HOME/.cargo/bin"
+  - diesel database setup
 
 script:
   - cargo build
