@@ -20,7 +20,8 @@ before_script:
   #- pip install 'travis-cargo<0.2' --user && export PATH=$HOME/.local/bin:$PATH
   - which rustfmt || cargo install rustfmt
   - which diesel || cargo install diesel_cli --no-default-features --features postgres
-  - cargo install -q cargo-update || true
+  - cargo install clippy || true
+  - cargo install cargo-update || true
   - export PATH="$PATH:$HOME/.cargo/bin"
   - cargo install-update -a
   - diesel database setup
@@ -44,14 +45,12 @@ addons:
       - libdw-dev
 
 matrix:
-  allow_failures:
-      - env: CLIPPY=YESPLEASE
   include:
     - rust: nightly
       env: CLIPPY=YESPLEASE
       script:
         - cargo fmt -- --write-mode=diff
-        - cargo build --features "clippy"
+        - cargo clippy
 
 env:
   global:
