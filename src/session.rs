@@ -36,19 +36,12 @@ impl iron_sessionstorage::Value for Player {
 
 
 pub fn link_to_chain(chain: &mut Chain) -> Result<&mut Chain, SessionError> {
-    let connection = RedisConnection::new();
-    let backend = RedisBackend::new(connection)?;
+    let backend = RedisBackend::new(RedisConnection)?;
     let session_storage = SessionStorage::new(backend);
     Ok(chain.link_around(session_storage))
 }
 
 struct RedisConnection;
-impl RedisConnection {
-    fn new() -> RedisConnection {
-        RedisConnection {}
-    }
-}
-
 impl IntoConnectionInfo for RedisConnection {
     fn into_connection_info(self) -> RedisResult<ConnectionInfo> {
         let addr = ConnectionAddr::Tcp("127.0.0.1".to_string(), 6379);
