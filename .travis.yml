@@ -44,8 +44,6 @@ addons:
       - libdw-dev
 
 matrix:
-  allow_failures:
-      - env: CLIPPY=YESPLEASE
   include:
     - rust: nightly
       env: CLIPPY=YESPLEASE
