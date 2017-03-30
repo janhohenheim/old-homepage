@@ -5,7 +5,6 @@ extern crate serde_json;
 extern crate redis;
 
 use self::iron::prelude::*;
-use self::iron_sessionstorage::traits::*;
 use self::iron_sessionstorage::SessionStorage;
 use self::iron_sessionstorage::backends::RedisBackend;
 use self::iron_sessionstorage::errors::Error as SessionError;
