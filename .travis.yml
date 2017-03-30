@@ -9,19 +9,21 @@ dist: trusty
 cache: cargo
 
 before_install:
+# openssl dependencies
   - sudo apt-get install -y libssl-dev
   - sudo apt-get install -y pkg-config
   - sudo apt-get install -y openssl
-
-install:
-  #- pip install 'travis-cargo<0.2' --user && export PATH=$HOME/.local/bin:$PATH
-  - cargo install diesel_cli --debug --no-default-features --features postgres
-  - export PATH=$HOME/.cargo/bin:$PATH
+# diesel dependencies
+  - sudo apt-get install libpq-dev
 
 before_script:
-  #- diesel database setup
-  - export PATH="$PATH:$HOME/.cargo/bin"
+  #- pip install 'travis-cargo<0.2' --user && export PATH=$HOME/.local/bin:$PATH
   - which rustfmt || cargo install rustfmt
+  - which diesel || cargo install diesel_cli --no-default-features --features postgres
+  - cargo install -q cargo-update || true
+  - export PATH="$PATH:$HOME/.cargo/bin"
+  - cargo install-update -a
+  - diesel database setup
 
 script:
   - cargo build
@@ -42,11 +44,8 @@ addons:
       - libdw-dev
 
 matrix:
-  allow_failures:
-      - env: CLIPPY=YESPLEASE
   include:
     - rust: nightly
-      env: CLIPPY=YESPLEASE
       script:
         - cargo fmt -- --write-mode=diff
         - cargo build --features "clippy"
