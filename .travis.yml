@@ -20,7 +20,7 @@ before_script:
   #- pip install 'travis-cargo<0.2' --user && export PATH=$HOME/.local/bin:$PATH
   - which rustfmt || cargo install rustfmt
   - which diesel || cargo install diesel_cli --no-default-features --features postgres
-  - which cargo-update || cargo install cargo-update
+  - cargo install -q cargo-update || true
   - export PATH="$PATH:$HOME/.cargo/bin"
   - cargo install-update -a
   - diesel database setup
