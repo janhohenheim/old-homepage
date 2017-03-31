@@ -44,8 +44,11 @@ addons:
       - libdw-dev
 
 matrix:
+  allow_failures:
+    - env: TEST_GROUP=tools
   include:
     - rust: nightly
+    - env: TEST_GROUP=tools
       script:
         - cargo fmt -- --write-mode=diff
         - cargo build --features "clippy"
