@@ -22,3 +22,4 @@ pub fn start_post(req: &mut Request) -> IronResult<PathBuf> {
     }
     Ok(PathBuf::from("quiz/quiz_question.hbs"))
 }
+

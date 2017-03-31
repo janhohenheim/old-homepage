@@ -9,11 +9,12 @@ use self::mount::Mount;
 use self::staticfile::Static;
 use std::path::Path;
 use templating::{make_site_from_file, Section};
-use quiz::controller::{start, start_post};
+use quiz::controller::*;
 
 pub fn create_chain() -> Chain {
 
-    let router = router!(root: get "/" => handle_root,
+    let router =
+        router!(root: get "/" => handle_root,
                          contact: get "/contact" => handle_contact,
                          quiz: get "/quiz" => handle_quiz,
                          quiz_post: post "/quiz" => handle_quiz_post,

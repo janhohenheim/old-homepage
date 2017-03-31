@@ -34,6 +34,8 @@ impl iron_sessionstorage::Value for Player {
 }
 
 
+
+
 pub fn link_to_chain(chain: &mut Chain) -> Result<&mut Chain, SessionError> {
     let backend = RedisBackend::new(RedisConnection)?;
     let session_storage = SessionStorage::new(backend);
