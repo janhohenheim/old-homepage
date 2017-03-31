@@ -3,7 +3,7 @@ extern crate diesel;
 
 use self::dotenv::dotenv;
 use std::env;
-use quiz::model::Player;
+use super::model::Player;
 use self::diesel::prelude::*;
 use self::diesel::pg::PgConnection;
 
