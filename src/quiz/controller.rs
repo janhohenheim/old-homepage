@@ -15,8 +15,8 @@ use std::boxed::Box;
 pub fn start(req: &mut Request) -> IronResult<PathBuf> {
     let player = req.session().get::<Player>()?;
     match player {
-        Some(_) => Ok(PathBuf::from("quiz/quiz_question.hbs")),
-        None => Ok(PathBuf::from("quiz/quiz_start.hbs")),
+        Some(_) => Ok(PathBuf::from("quiz/quiz_question")),
+        None => Ok(PathBuf::from("quiz/quiz_start")),
     }
 }
 
@@ -25,7 +25,7 @@ pub fn start_post(req: &mut Request) -> IronResult<PathBuf> {
     if player.is_none() {
         req.session().set(Player { id: 0 })?;
     }
-    Ok(PathBuf::from("quiz/quiz_question.hbs"))
+    Ok(PathBuf::from("quiz/quiz_question"))
 }
 
 
@@ -37,5 +37,5 @@ pub fn admin_post(req: &mut Request) -> IronResult<PathBuf> {
     };
     let dao = Dao::new();
     dao.create_category(&category).map_err(|err| IronError{ error: Box::new(err), response: Response::with(status::BadRequest) })?;
-    Ok(PathBuf::from("quiz/admin.hbs"))
+    Ok(PathBuf::from("quiz/admin"))
 }

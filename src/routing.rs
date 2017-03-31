@@ -42,11 +42,11 @@ fn respond_with_quiz_file(filename: &Path) -> IronResult<Response> {
 }
 
 fn handle_root(_: &mut Request) -> IronResult<Response> {
-    respond_with_file(Some(&Section::Home), Path::new("index.html"))
+    respond_with_file(Some(&Section::Home), Path::new("index"))
 }
 
 fn handle_contact(_: &mut Request) -> IronResult<Response> {
-    respond_with_file(Some(&Section::Contact), Path::new("contact/contact.html"))
+    respond_with_file(Some(&Section::Contact), Path::new("contact/contact"))
 }
 
 fn handle_quiz(req: &mut Request) -> IronResult<Response> {
@@ -60,15 +60,15 @@ fn handle_quiz_post(req: &mut Request) -> IronResult<Response> {
 }
 
 fn handle_quiz_play(_: &mut Request) -> IronResult<Response> {
-    respond_with_quiz_file(Path::new("quiz/quiz_start.hbs"))
+    respond_with_quiz_file(Path::new("quiz/quiz_start"))
 }
 
 fn handle_quiz_play_post(_: &mut Request) -> IronResult<Response> {
-    respond_with_quiz_file(Path::new("quiz/quiz_question.hbs"))
+    respond_with_quiz_file(Path::new("quiz/quiz_question"))
 }
 
 fn handle_quiz_admin(_: &mut Request) -> IronResult<Response> {
-    respond_with_quiz_file(Path::new("quiz/admin.hbs"))
+    respond_with_quiz_file(Path::new("quiz/admin"))
 }
 
 fn handle_quiz_admin_post(req: &mut Request) -> IronResult<Response> {

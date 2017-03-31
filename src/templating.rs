@@ -11,9 +11,7 @@ use self::iron::prelude::*;
 use self::hbs::{Template, HandlebarsEngine, DirectorySource, SourceError};
 use self::handlebars::to_json;
 use self::serde_json::value::Map;
-use std::fs::File;
-use std::io::prelude::*;
-use std::path::{PathBuf, Path};
+use std::path::Path;
 
 #[derive(Serialize, Debug, PartialEq, Eq)]
 pub enum Section {
@@ -52,11 +50,16 @@ pub fn make_site(section: Option<&Section>, content: &str) -> Template {
 }
 
 pub fn make_site_from_file(section: Option<&Section>, path: &Path) -> Template {
-    match get_site(path) {
-        Ok(site) => make_site(section, &site),
-        Err(err) => make_site_err(&err),
+    let mut sections = get_sections();
+    if let Some(section) = section {
+        set_active_section(&mut sections, section);
     }
+    let mut data = Map::new();
+    data.insert("sections".to_string(), to_json(&sections));
+    data.insert("parent".to_string(), to_json(&"template".to_string()));
 
+    let path = path.to_str().unwrap();
+    Template::new(path, data)
 }
 
 fn get_sections() -> Vec<SectionData> {
@@ -83,19 +86,4 @@ fn set_active_section(sections: &mut Vec<SectionData>, active: &Section) {
             section.is_active = true
         }
     }
-}
-
-fn get_site(path: &Path) -> std::io::Result<String> {
-    let mut whole_path = PathBuf::from("res/templates/");
-    whole_path.push(path);
-    let mut file = File::open(&whole_path)?;
-    let mut site = String::new();
-    file.read_to_string(&mut site)?;
-    Ok(site)
-}
-
-fn make_site_err<T: std::fmt::Display>(err: &T) -> Template {
-    let err = format!("{}", err);
-    println!("Error: {}", err);
-    make_site(None, &err)
 }
