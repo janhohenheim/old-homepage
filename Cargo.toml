@@ -13,10 +13,11 @@ mime = "0.2"
 router = "0.5"
 mount = "0.3"
 staticfile = "0.4"
-diesel = { version = "0.12", features = ["postgres", "serde_json"] }
+diesel = { version = "0.12", features = ["postgres", "serde_json", "chrono"] }
 diesel_codegen = { version = "0.12", features = ["postgres"] }
 dotenv = "0.10"
 postgres = "0.14"
+chrono = "0.3"
 handlebars = "0.25"
 handlebars-iron = { version = "0.23", features = ["unstable"] }
 serde = "0.9"
