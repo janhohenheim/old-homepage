@@ -19,3 +19,11 @@ pub struct RoundQuestion {
     pub is_joker_used: bool,
     pub answer_id: Option<i32>,
 }
+
+#[derive(Insertable)]
+#[table_name="round_question"]
+pub struct NewRoundQuestion {
+    pub round_id: i32,
+    pub question_id: i32,
+    pub start_time: NaiveDateTime,
+}

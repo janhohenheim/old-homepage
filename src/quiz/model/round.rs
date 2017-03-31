@@ -12,3 +12,10 @@ pub struct Round {
     pub category_id: i32,
     pub player_id: i32,
 }
+
+#[derive(Insertable)]
+#[table_name="round"]
+pub struct NewRound {
+    pub category_id: i32,
+    pub player_id: i32,
+}
