@@ -31,11 +31,27 @@ pub fn start_post(req: &mut Request) -> IronResult<PathBuf> {
 
 pub fn admin_post(req: &mut Request) -> IronResult<PathBuf> {
     let category = {
-        let formdata = req.get_ref::<UrlEncodedBody>().map_err(|err| IronError{ error: Box::new(err), response: Response::with(status::BadRequest) })?;
-        let categories = formdata.get("category").ok_or(IronError{ error: (Box::new(UrlDecodingError::EmptyQuery)), response: Response::with(status::BadRequest) })?;
+        let formdata = req.get_ref::<UrlEncodedBody>()
+            .map_err(|err| {
+                         IronError {
+                             error: Box::new(err),
+                             response: Response::with(status::BadRequest),
+                         }
+                     })?;
+        let categories = formdata.get("category")
+            .ok_or(IronError {
+                       error: (Box::new(UrlDecodingError::EmptyQuery)),
+                       response: Response::with(status::BadRequest),
+                   })?;
         categories[0].to_owned()
     };
     let dao = Dao::new();
-    dao.create_category(&category).map_err(|err| IronError{ error: Box::new(err), response: Response::with(status::BadRequest) })?;
+    dao.create_category(&category)
+        .map_err(|err| {
+                     IronError {
+                         error: Box::new(err),
+                         response: Response::with(status::BadRequest),
+                     }
+                 })?;
     Ok(PathBuf::from("quiz/admin"))
 }
