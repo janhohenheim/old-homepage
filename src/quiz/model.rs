@@ -1,11 +1,5 @@
 use super::schema::*;
 
-#[derive(Queryable, Identifiable)]
-#[table_name="category"]
-pub struct Category {
-    pub id: i32,
-    pub text: String,
-}
 
 #[derive(Queryable, Identifiable)]
 #[table_name="question"]
@@ -19,6 +13,7 @@ pub struct Question {
 HasMany! {
     (question, foreign_key = category_id)
     #[table_name(category)]
+    #[derive(Queryable, Identifiable)]
     pub struct Category {
         pub id: i32,
         pub text: String,
