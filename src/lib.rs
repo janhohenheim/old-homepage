@@ -5,7 +5,7 @@
 extern crate router;
 #[macro_use]
 extern crate serde_derive;
-#[macro_use] 
+#[macro_use]
 extern crate diesel;
 #[macro_use]
 extern crate diesel_codegen;
