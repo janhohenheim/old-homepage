@@ -5,7 +5,7 @@ use self::dotenv::dotenv;
 use std::env;
 use self::diesel::prelude::*;
 use self::diesel::pg::PgConnection;
-use super::model::*;
+use super::model::category::*;
 
 type Result<T> = self::diesel::QueryResult<T>;
 
