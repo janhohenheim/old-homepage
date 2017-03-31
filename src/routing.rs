@@ -71,6 +71,7 @@ fn handle_quiz_admin(_: &mut Request) -> IronResult<Response> {
     respond_with_quiz_file(Path::new("quiz/admin.hbs"))
 }
 
-fn handle_quiz_admin_post(_: &mut Request) -> IronResult<Response> {
-    respond_with_quiz_file(Path::new("quiz/admin.hbs"))
+fn handle_quiz_admin_post(req: &mut Request) -> IronResult<Response> {
+    let path = admin_post(req)?;
+    respond_with_quiz_file(&path)
 }
