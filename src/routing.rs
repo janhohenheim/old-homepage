@@ -27,7 +27,8 @@ pub fn create_chain() -> Chain {
     mount.mount("/", router);
     mount
         .mount("/css", Static::new(Path::new("res/public/css")))
-        .mount("/js", Static::new(Path::new("res/public/js")));
+        .mount("/js", Static::new(Path::new("res/public/js")))
+        .mount("/fonts", Static::new(Path::new("res/public/fonts")));
 
     Chain::new(mount)
 }
