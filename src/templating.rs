@@ -36,7 +36,7 @@ struct SectionData {
 
 
 pub fn generate_site(path: &str,
-                     data: &mut BTreeMap<String, Value>,
+                     mut data: BTreeMap<String, Value>,
                      section: Option<&Section>)
                      -> Template {
     let mut sections = get_sections();
@@ -47,13 +47,13 @@ pub fn generate_site(path: &str,
         "sections".to_string() => to_json(&sections),
         "parent".to_string() =>  to_json(&"template".to_string()),
     };
-    base_data.append(data);
+    base_data.append(&mut data);
 
     Template::new(path, base_data)
 }
 
 pub fn generate_site_without_data(path: &str, section: Option<&Section>) -> Template {
-    generate_site(path, &mut BTreeMap::new(), section)
+    generate_site(path, BTreeMap::new(), section)
 }
 
 fn get_sections() -> Vec<SectionData> {

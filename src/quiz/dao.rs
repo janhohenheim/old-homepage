@@ -25,6 +25,14 @@ impl Dao {
             .into(category::table)
             .get_result(&self.conn)
     }
+
+    pub fn get_categories(&self) -> Result<Vec<Category>> {
+        use super::schema::category::dsl::*;
+
+        category
+            .filter(is_active.eq(true))
+            .load::<Category>(&self.conn)
+    }
 }
 
 fn establish_connection() -> PgConnection {

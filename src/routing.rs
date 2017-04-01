@@ -8,7 +8,7 @@ use self::iron::prelude::*;
 use self::mount::Mount;
 use self::staticfile::Static;
 use std::path::Path;
-use templating::{generate_site, generate_site_without_data, Section};
+use templating::{generate_site_without_data, Section};
 use quiz::controller::*;
 
 pub fn create_chain() -> Chain {
@@ -72,6 +72,5 @@ fn handle_quiz_admin(req: &mut Request) -> IronResult<Response> {
 }
 
 fn handle_quiz_admin_post(req: &mut Request) -> IronResult<Response> {
-    let path = post_admin(req)?;
-    respond_with_quiz_file(&path)
+    post_admin(req)
 }
