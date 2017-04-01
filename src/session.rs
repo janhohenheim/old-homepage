@@ -5,16 +5,16 @@ extern crate serde_json;
 extern crate redis;
 
 use self::iron::prelude::*;
+use self::iron_sessionstorage::traits::*;
 use self::iron_sessionstorage::SessionStorage;
 use self::iron_sessionstorage::backends::RedisBackend;
 use self::iron_sessionstorage::errors::Error as SessionError;
 use self::redis::{IntoConnectionInfo, ConnectionInfo, RedisResult, ConnectionAddr};
-
 use self::serde_json::{from_str, to_string};
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, Eq)]
 pub struct Player {
-    pub id: u32,
+    pub id: i32,
 }
 
 impl iron_sessionstorage::Value for Player {
@@ -33,7 +33,14 @@ impl iron_sessionstorage::Value for Player {
     }
 }
 
+pub fn get_player(req: &mut Request) -> IronResult<Option<Player>> {
+    req.session().get::<Player>()
+}
 
+
+pub fn create_player(req: &mut Request, player: Player) -> IronResult<()> {
+    req.session().set(player)
+}
 
 
 pub fn link_to_chain(chain: &mut Chain) -> Result<&mut Chain, SessionError> {

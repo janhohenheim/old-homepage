@@ -6,33 +6,34 @@ use std::env;
 use self::diesel::prelude::*;
 use self::diesel::pg::PgConnection;
 use super::model::category::*;
+use super::model::player::*;
 
 type Result<T> = self::diesel::QueryResult<T>;
 
-pub struct Dao {
-    conn: PgConnection,
+pub fn create_player(name: &str) -> Result<Player> {
+    use super::schema::player;
+    let new_player = NewPlayer { name };
+    let conn = establish_connection();
+    diesel::insert(&new_player)
+        .into(player::table)
+        .get_result(&conn)
 }
 
-impl Dao {
-    pub fn new() -> Self {
-        Dao { conn: establish_connection() }
-    }
+pub fn create_category(text: &str) -> Result<Category> {
+    use super::schema::category;
+    let new_category = NewCategory { text };
+    let conn = establish_connection();
+    diesel::insert(&new_category)
+        .into(category::table)
+        .get_result(&conn)
+}
 
-    pub fn create_category(&self, text: &str) -> Result<Category> {
-        use super::schema::category;
-        let new_category = NewCategory { text };
-        diesel::insert(&new_category)
-            .into(category::table)
-            .get_result(&self.conn)
-    }
-
-    pub fn get_categories(&self) -> Result<Vec<Category>> {
-        use super::schema::category::dsl::*;
-
-        category
-            .filter(is_active.eq(true))
-            .load::<Category>(&self.conn)
-    }
+pub fn get_categories() -> Result<Vec<Category>> {
+    use super::schema::category::dsl::*;
+    let conn = establish_connection();
+    category
+        .filter(is_active.eq(true))
+        .load::<Category>(&conn)
 }
 
 fn establish_connection() -> PgConnection {
