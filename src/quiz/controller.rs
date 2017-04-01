@@ -21,23 +21,14 @@ pub fn get_start(req: &mut Request) -> IronResult<String> {
     }
 }
 
-fn to_ironresult<T, E>(result: Result<T, E>) -> IronResult<T>
-    where E: Send + Error + 'static
-{
-    result.map_err(|err| {
-                       IronError {
-                           error: Box::new(err),
-                           response: Response::with(status::BadRequest),
-                       }
-                   })
-}
-
 pub fn post_start(req: &mut Request) -> IronResult<String> {
     let player = session::get_player(req)?;
     if player.is_none() {
-        let new_player = create_player("adolfo");
+        let name = get_formdata(req, "name")?;
+        // Todo: handle invalid name;
+        let new_player = create_player(&name);
         let new_player = to_ironresult(new_player)?;
-        session::create_player(req, session::Player { id: new_player.id })?
+        session::create_player(req, new_player.id)?
     }
     Ok("quiz/quiz_question".to_string())
 }
@@ -56,17 +47,32 @@ pub fn get_admin(_: &mut Request) -> IronResult<Response> {
 }
 
 pub fn post_admin(req: &mut Request) -> IronResult<Response> {
-    let category = {
-        let formdata = req.get_ref::<UrlEncodedBody>();
-        let formdata = to_ironresult(formdata)?;
-        let categories = formdata.get("category")
-            .ok_or(IronError {
-                       error: (Box::new(UrlDecodingError::EmptyQuery)),
-                       response: Response::with(status::BadRequest),
-                   })?;
-        categories[0].to_owned()
-    };
+    let category = get_formdata(req, "category")?;
     let new_category = create_category(&category);
     to_ironresult(new_category)?;
     get_admin(req)
+}
+
+
+
+fn to_ironresult<T, E>(result: Result<T, E>) -> IronResult<T>
+    where E: Send + Error + 'static
+{
+    result.map_err(|err| {
+        IronError {
+            error: Box::new(err),
+            response: Response::with(status::BadRequest),
+        }
+    })
+}
+
+fn get_formdata(req: &mut Request, form_id: &str) -> IronResult<String> {
+    let formdata = req.get_ref::<UrlEncodedBody>();
+    let formdata = to_ironresult(formdata)?;
+    let data = formdata.get(form_id)
+        .ok_or(IronError {
+            error: (Box::new(UrlDecodingError::EmptyQuery)),
+            response: Response::with(status::BadRequest),
+        })?;
+    Ok(data[0].to_owned())
 }

@@ -15,6 +15,16 @@ use self::serde_json::{from_str, to_string};
 #[derive(Serialize, Deserialize, Debug, PartialEq, Eq)]
 pub struct Player {
     pub id: i32,
+    pub selected_answer_index: Option<i32>,
+}
+
+impl Player {
+    pub fn new(id: i32) -> Self {
+        Player{
+            id,
+            selected_answer_index: None,
+        }
+    }
 }
 
 impl iron_sessionstorage::Value for Player {
@@ -38,8 +48,8 @@ pub fn get_player(req: &mut Request) -> IronResult<Option<Player>> {
 }
 
 
-pub fn create_player(req: &mut Request, player: Player) -> IronResult<()> {
-    req.session().set(player)
+pub fn create_player(req: &mut Request, id: i32) -> IronResult<()> {
+    req.session().set(Player::new(id))
 }
 
 
