@@ -10,26 +10,29 @@ use std::path::PathBuf;
 use super::dao::*;
 use self::urlencoded::{UrlEncodedBody, UrlDecodingError};
 use std::boxed::Box;
+use super::super::templating::*;
 
-
-pub fn start(req: &mut Request) -> IronResult<PathBuf> {
+pub fn get_start(req: &mut Request) -> IronResult<String> {
     let player = req.session().get::<Player>()?;
     match player {
-        Some(_) => Ok(PathBuf::from("quiz/quiz_question")),
-        None => Ok(PathBuf::from("quiz/quiz_start")),
+        Some(_) => Ok("quiz/quiz_question".to_string()),
+        None => Ok("quiz/quiz_start".to_string()),
     }
 }
 
-pub fn start_post(req: &mut Request) -> IronResult<PathBuf> {
+pub fn post_start(req: &mut Request) -> IronResult<String> {
     let player = req.session().get::<Player>()?;
     if player.is_none() {
         req.session().set(Player { id: 0 })?;
     }
-    Ok(PathBuf::from("quiz/quiz_question"))
+    Ok("quiz/quiz_question".to_string())
 }
 
+pub fn get_admin(req: &mut Request) -> IronResult<Response> {
+    Ok(Response::with(("", status::Ok)))
+}
 
-pub fn admin_post(req: &mut Request) -> IronResult<PathBuf> {
+pub fn post_admin(req: &mut Request) -> IronResult<String> {
     let category = {
         let formdata = req.get_ref::<UrlEncodedBody>()
             .map_err(|err| {
@@ -53,5 +56,5 @@ pub fn admin_post(req: &mut Request) -> IronResult<PathBuf> {
                          response: Response::with(status::BadRequest),
                      }
                  })?;
-    Ok(PathBuf::from("quiz/admin"))
+    Ok("quiz/admin".to_string())
 }

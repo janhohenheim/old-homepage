@@ -6,12 +6,11 @@ extern crate handlebars_iron as hbs;
 extern crate serde;
 extern crate serde_json;
 
-use std;
 use self::iron::prelude::*;
 use self::hbs::{Template, HandlebarsEngine, DirectorySource, SourceError};
 use self::handlebars::to_json;
-use self::serde_json::value::Map;
-use std::path::Path;
+use self::serde_json::Value;
+use std::collections::BTreeMap;
 
 #[derive(Serialize, Debug, PartialEq, Eq)]
 pub enum Section {
@@ -36,30 +35,25 @@ struct SectionData {
 }
 
 
-pub fn make_site(section: Option<&Section>, content: &str) -> Template {
+pub fn generate_site(path: &str,
+                     data: &mut BTreeMap<String, Value>,
+                     section: Option<&Section>)
+                     -> Template {
     let mut sections = get_sections();
     if let Some(section) = section {
         set_active_section(&mut sections, section);
     }
+    let mut base_data = btreemap! {
+        "sections".to_string() => to_json(&sections),
+        "parent".to_string() =>  to_json(&"template".to_string()),
+    };
+    base_data.append(data);
 
-    let mut data = Map::new();
-    data.insert("sections".to_string(), to_json(&sections));
-    data.insert("content".to_string(), to_json(&content.to_owned()));
-
-    Template::new("template", data)
+    Template::new(path, base_data)
 }
 
-pub fn make_site_from_file(section: Option<&Section>, path: &Path) -> Template {
-    let mut sections = get_sections();
-    if let Some(section) = section {
-        set_active_section(&mut sections, section);
-    }
-    let mut data = Map::new();
-    data.insert("sections".to_string(), to_json(&sections));
-    data.insert("parent".to_string(), to_json(&"template".to_string()));
-
-    let path = path.to_str().unwrap();
-    Template::new(path, data)
+pub fn generate_site_without_data(path: &str, section: Option<&Section>) -> Template {
+    generate_site(path, &mut BTreeMap::new(), section)
 }
 
 fn get_sections() -> Vec<SectionData> {

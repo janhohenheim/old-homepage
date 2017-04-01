@@ -8,7 +8,7 @@ use self::iron::prelude::*;
 use self::mount::Mount;
 use self::staticfile::Static;
 use std::path::Path;
-use templating::{make_site_from_file, Section};
+use templating::{generate_site, generate_site_without_data, Section};
 use quiz::controller::*;
 
 pub fn create_chain() -> Chain {
@@ -32,46 +32,46 @@ pub fn create_chain() -> Chain {
     Chain::new(mount)
 }
 
-fn respond_with_file(section: Option<&Section>, filename: &Path) -> IronResult<Response> {
-    let site_template = make_site_from_file(section, filename);
+fn respond_with_file(filename: &str, section: Option<&Section>) -> IronResult<Response> {
+    let site_template = generate_site_without_data(filename, section);
     Ok(Response::with((site_template, status::Ok)))
 }
 
-fn respond_with_quiz_file(filename: &Path) -> IronResult<Response> {
-    respond_with_file(Some(&Section::Quiz), filename)
+fn respond_with_quiz_file(filename: &str) -> IronResult<Response> {
+    respond_with_file(filename, Some(&Section::Quiz))
 }
 
 fn handle_root(_: &mut Request) -> IronResult<Response> {
-    respond_with_file(Some(&Section::Home), Path::new("index"))
+    respond_with_file("index", Some(&Section::Home))
 }
 
 fn handle_contact(_: &mut Request) -> IronResult<Response> {
-    respond_with_file(Some(&Section::Contact), Path::new("contact/contact"))
+    respond_with_file("contact/contact", Some(&Section::Contact))
 }
 
 fn handle_quiz(req: &mut Request) -> IronResult<Response> {
-    let path = start(req)?;
+    let path = get_start(req)?;
     respond_with_quiz_file(&path)
 }
 
 fn handle_quiz_post(req: &mut Request) -> IronResult<Response> {
-    let path = start_post(req)?;
+    let path = post_start(req)?;
     respond_with_quiz_file(&path)
 }
 
 fn handle_quiz_play(_: &mut Request) -> IronResult<Response> {
-    respond_with_quiz_file(Path::new("quiz/quiz_start"))
+    respond_with_quiz_file("quiz/quiz_start")
 }
 
 fn handle_quiz_play_post(_: &mut Request) -> IronResult<Response> {
-    respond_with_quiz_file(Path::new("quiz/quiz_question"))
+    respond_with_quiz_file("quiz/quiz_question")
 }
 
-fn handle_quiz_admin(_: &mut Request) -> IronResult<Response> {
-    respond_with_quiz_file(Path::new("quiz/admin"))
+fn handle_quiz_admin(req: &mut Request) -> IronResult<Response> {
+    get_admin(req)
 }
 
 fn handle_quiz_admin_post(req: &mut Request) -> IronResult<Response> {
-    let path = admin_post(req)?;
+    let path = post_admin(req)?;
     respond_with_quiz_file(&path)
 }
