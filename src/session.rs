@@ -20,7 +20,7 @@ pub struct Player {
 
 impl Player {
     pub fn new(id: i32) -> Self {
-        Player{
+        Player {
             id,
             selected_answer_index: None,
         }

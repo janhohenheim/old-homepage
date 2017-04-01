@@ -56,8 +56,7 @@ fn handle_quiz(req: &mut Request) -> IronResult<Response> {
 }
 
 fn handle_quiz_post(req: &mut Request) -> IronResult<Response> {
-    let path = post_start(req)?;
-    respond_with_quiz_file(&path)
+    post_start(req)
 }
 
 fn handle_quiz_play(_: &mut Request) -> IronResult<Response> {
