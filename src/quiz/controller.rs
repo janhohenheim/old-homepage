@@ -14,36 +14,24 @@ use super::super::templating::*;
 use self::handlebars::to_json;
 use std::error::Error;
 
-pub fn get_start(req: &mut Request) -> IronResult<String> {
-    let player = session::get_player(req)?;
-    match player {
-        Some(_) => Ok("quiz/quiz_question".to_string()),
-        None => Ok("quiz/quiz_start".to_string()),
+pub fn get_quiz(req: &mut Request) -> IronResult<Response> {
+    if session::get_player(req)?.is_some() {
+        return get_play(req);
     }
-}
-
-pub fn post_start(req: &mut Request) -> IronResult<Response> {
-    let player = session::get_player(req)?;
-    let mut template = generate_site_without_data("quiz/quiz_question", Some(&Section::Quiz));
-    if player.is_none() {
-        let new_player = create_player_data(req);
-        if new_player.is_err() {
-            let error = btreemap! {
-                "error".to_string() => to_json(&"true".to_string()),
-            };
-            template = generate_site("quiz/quiz_start", error, Some(&Section::Quiz));
-        }
-    }
-
+    let template = generate_site_without_data("quiz/quiz_start", Some(&Section::Quiz));
     Ok(Response::with((template, status::Ok)))
 }
 
-fn create_player_data(req: &mut Request) -> IronResult<()> {
-    let name = get_formdata(req, "name")?;
-    // Todo: handle invalid name;
-    let new_player = create_player(&name);
-    let new_player = to_ironresult(new_player)?;
-    session::create_player(req, new_player.id)
+pub fn post_quiz(req: &mut Request) -> IronResult<Response> {
+    if session::get_player(req)?.is_some() || create_player_data(req).is_ok() {
+        return post_play(req);
+    }
+
+    let err = btreemap!{
+        "error".to_string() => to_json(&"true".to_string())
+    };
+    let template = generate_site("quiz/quiz_start", err, Some(&Section::Quiz));
+    Ok(Response::with((template, status::Ok)))
 }
 
 pub fn get_admin(_: &mut Request) -> IronResult<Response> {
@@ -66,7 +54,28 @@ pub fn post_admin(req: &mut Request) -> IronResult<Response> {
     get_admin(req)
 }
 
+pub fn get_play(req: &mut Request) -> IronResult<Response> {
+    if session::get_player(req)?.is_none() {
+        return get_quiz(req);
+    }
+    let template = generate_site_without_data("quiz/quiz_question", Some(&Section::Quiz));
+    Ok(Response::with((template, status::Ok)))
+}
 
+pub fn post_play(req: &mut Request) -> IronResult<Response> {
+    if session::get_player(req)?.is_none() {
+        return get_quiz(req);
+    }
+    let template = generate_site_without_data("quiz/quiz_question", Some(&Section::Quiz));
+    Ok(Response::with((template, status::Ok)))
+}
+
+fn create_player_data(req: &mut Request) -> IronResult<()> {
+    let name = get_formdata(req, "name")?;
+    let new_player = create_player(&name);
+    let new_player = to_ironresult(new_player)?;
+    session::create_player(req, new_player.id)
+}
 
 fn to_ironresult<T, E>(result: Result<T, E>) -> IronResult<T>
     where E: Send + Error + 'static

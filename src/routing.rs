@@ -9,7 +9,7 @@ use self::mount::Mount;
 use self::staticfile::Static;
 use std::path::Path;
 use templating::{generate_site_without_data, Section};
-use quiz::controller::*;
+use quiz::controller as quizctrl;
 
 pub fn create_chain() -> Chain {
 
@@ -38,10 +38,6 @@ fn respond_with_file(filename: &str, section: Option<&Section>) -> IronResult<Re
     Ok(Response::with((site_template, status::Ok)))
 }
 
-fn respond_with_quiz_file(filename: &str) -> IronResult<Response> {
-    respond_with_file(filename, Some(&Section::Quiz))
-}
-
 fn handle_root(_: &mut Request) -> IronResult<Response> {
     respond_with_file("index", Some(&Section::Home))
 }
@@ -51,26 +47,25 @@ fn handle_contact(_: &mut Request) -> IronResult<Response> {
 }
 
 fn handle_quiz(req: &mut Request) -> IronResult<Response> {
-    let path = get_start(req)?;
-    respond_with_quiz_file(&path)
+    quizctrl::get_quiz(req)
 }
 
 fn handle_quiz_post(req: &mut Request) -> IronResult<Response> {
-    post_start(req)
+    quizctrl::post_quiz(req)
 }
 
-fn handle_quiz_play(_: &mut Request) -> IronResult<Response> {
-    respond_with_quiz_file("quiz/quiz_start")
+fn handle_quiz_play(req: &mut Request) -> IronResult<Response> {
+    quizctrl::get_play(req)
 }
 
-fn handle_quiz_play_post(_: &mut Request) -> IronResult<Response> {
-    respond_with_quiz_file("quiz/quiz_question")
+fn handle_quiz_play_post(req: &mut Request) -> IronResult<Response> {
+    quizctrl::post_play(req)
 }
 
 fn handle_quiz_admin(req: &mut Request) -> IronResult<Response> {
-    get_admin(req)
+    quizctrl::get_admin(req)
 }
 
 fn handle_quiz_admin_post(req: &mut Request) -> IronResult<Response> {
-    post_admin(req)
+    quizctrl::post_admin(req)
 }
