@@ -16,12 +16,12 @@ pub fn create_chain() -> Chain {
     let router =
         router!(root: get "/" => handle_root,
                          contact: get "/contact" => handle_contact,
-                         quiz: get "/quiz" => handle_quiz,
-                         quiz_post: post "/quiz" => handle_quiz_post,
-                         quiz_play: get "/quiz/play" => handle_quiz_play,
-                         quiz_play_post: post "/quiz/play" => handle_quiz_play_post,
-                         quiz_admin: get "/quiz/admin" => handle_quiz_admin,
-                         quiz_admin_post: post "/quiz/admin" => handle_quiz_admin_post,);
+                         get_quiz: get "/quiz" => quizctrl::get_quiz,
+                         post_quiz: post "/quiz" => quizctrl::post_quiz,
+                         get_quiz_play: get "/quiz/play" => quizctrl::get_play,
+                         post_quiz_play: post "/quiz/play" => quizctrl::post_play,
+                         get_quiz_admin: get "/quiz/admin" => quizctrl::get_admin,
+                         post_quiz_admin_post: post "/quiz/admin" => quizctrl::post_admin,);
 
     let mut mount = Mount::new();
     mount.mount("/", router);
@@ -44,28 +44,4 @@ fn handle_root(_: &mut Request) -> IronResult<Response> {
 
 fn handle_contact(_: &mut Request) -> IronResult<Response> {
     respond_with_file("contact/contact", Some(&Section::Contact))
-}
-
-fn handle_quiz(req: &mut Request) -> IronResult<Response> {
-    quizctrl::get_quiz(req)
-}
-
-fn handle_quiz_post(req: &mut Request) -> IronResult<Response> {
-    quizctrl::post_quiz(req)
-}
-
-fn handle_quiz_play(req: &mut Request) -> IronResult<Response> {
-    quizctrl::get_play(req)
-}
-
-fn handle_quiz_play_post(req: &mut Request) -> IronResult<Response> {
-    quizctrl::post_play(req)
-}
-
-fn handle_quiz_admin(req: &mut Request) -> IronResult<Response> {
-    quizctrl::get_admin(req)
-}
-
-fn handle_quiz_admin_post(req: &mut Request) -> IronResult<Response> {
-    quizctrl::post_admin(req)
 }
