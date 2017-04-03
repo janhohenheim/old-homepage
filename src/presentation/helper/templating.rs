@@ -12,7 +12,7 @@ use self::hbs::{Template, HandlebarsEngine, DirectorySource, SourceError};
 use self::handlebars::to_json;
 use self::serde_json::Value;
 use std::collections::BTreeMap;
-use super::session;
+use presentation::controller::login::get_admin;
 
 #[derive(Serialize, Debug, PartialEq, Eq)]
 pub enum Section {
@@ -51,7 +51,7 @@ pub fn generate_site(req: &mut Request,
     };
     base_data.append(&mut data);
 
-    let admin = session::get_admin(req);
+    let admin = get_admin(req);
     if let Ok(admin_ok) = admin {
         if let Some(admin_some) = admin_ok {
             let mut username = btreemap! {

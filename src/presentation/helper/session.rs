@@ -1,16 +1,12 @@
 extern crate iron;
 extern crate iron_sessionstorage;
-extern crate serde;
-extern crate serde_json;
 extern crate redis;
 
 use self::iron::prelude::*;
-use self::iron_sessionstorage::traits::*;
 use self::iron_sessionstorage::SessionStorage;
 use self::iron_sessionstorage::backends::RedisBackend;
 use self::iron_sessionstorage::errors::Error as SessionError;
 use self::redis::{IntoConnectionInfo, ConnectionInfo, RedisResult, ConnectionAddr};
-use self::serde_json::{from_str, to_string};
 
 pub fn link_to_chain(chain: &mut Chain) -> Result<&mut Chain, SessionError> {
     let backend = RedisBackend::new(RedisConnection)?;
@@ -32,85 +28,4 @@ impl IntoConnectionInfo for RedisConnection {
         };
         Ok(connection)
     }
-}
-
-
-#[derive(Serialize, Deserialize, Debug, PartialEq, Eq)]
-pub struct Player {
-    pub id: i32,
-    pub selected_answer_index: Option<i32>,
-}
-
-impl Player {
-    pub fn new(id: i32) -> Self {
-        Player {
-            id,
-            selected_answer_index: None,
-        }
-    }
-}
-
-impl iron_sessionstorage::Value for Player {
-    fn get_key() -> &'static str {
-        "player"
-    }
-    fn into_raw(self) -> String {
-        to_string(&self).unwrap()
-    }
-    fn from_raw(value: String) -> Option<Self> {
-        if value.is_empty() {
-            None
-        } else {
-            from_str(&value).ok()
-        }
-    }
-}
-
-pub fn get_player(req: &mut Request) -> IronResult<Option<Player>> {
-    req.session().get::<Player>()
-}
-
-
-pub fn create_player(req: &mut Request, id: i32) -> IronResult<()> {
-    req.session().set(Player::new(id))
-}
-
-
-#[derive(Serialize, Deserialize, Debug, PartialEq, Eq)]
-pub struct Admin {
-    pub id: i32,
-    pub name: String,
-}
-
-impl Admin {
-    pub fn new(id: i32, name: String) -> Self {
-        Admin { id, name }
-    }
-}
-
-//TODO: exchange for custom [#derive], maybe do a pr on iron_sessionstorage
-impl iron_sessionstorage::Value for Admin {
-    fn get_key() -> &'static str {
-        "admin"
-    }
-    fn into_raw(self) -> String {
-        to_string(&self).unwrap()
-    }
-    fn from_raw(value: String) -> Option<Self> {
-        if value.is_empty() {
-            None
-        } else {
-            from_str(&value).ok()
-        }
-    }
-}
-
-
-pub fn get_admin(req: &mut Request) -> IronResult<Option<Admin>> {
-    req.session().get::<Admin>()
-}
-
-
-pub fn create_admin(req: &mut Request, id: i32, name: &str) -> IronResult<()> {
-    req.session().set(Admin::new(id, name.to_owned()))
 }
