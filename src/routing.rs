@@ -17,6 +17,8 @@ pub fn create_chain() -> Chain {
         router!(get_root: get "/" => handle_root,
                          get_contact: get "/contact" => handle_contact,
                          post_login: post "/login" => loginctrl::post_login,
+                         post_register: post "/register" => loginctrl::post_register,
+                         get_logout: get "/logout" => loginctrl::get_logout,
                          get_quiz: get "/quiz" => quizctrl::get_quiz,
                          post_quiz: post "/quiz" => quizctrl::post_quiz,
                          get_quiz_play: get "/quiz/play" => quizctrl::get_play,

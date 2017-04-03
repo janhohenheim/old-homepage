@@ -12,8 +12,6 @@ extern crate diesel;
 extern crate diesel_codegen;
 #[macro_use]
 extern crate maplit;
-#[macro_use]
-extern crate mime;
 
 
 pub mod routing;
