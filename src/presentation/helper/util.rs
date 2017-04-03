@@ -9,6 +9,7 @@ use self::urlencoded::{UrlEncodedBody, UrlDecodingError};
 pub fn get_formdata(req: &mut Request, form_id: &str) -> IronResult<String> {
     let formdata = req.get_ref::<UrlEncodedBody>();
     let formdata = to_ironresult(formdata)?;
+
     let data = formdata.get(form_id)
         .ok_or(IronError {
                    error: (Box::new(UrlDecodingError::EmptyQuery)),
