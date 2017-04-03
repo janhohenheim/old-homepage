@@ -1,4 +1,4 @@
-use super::super::schema::answer;
+use data::schema::answer;
 use super::question::Question;
 
 #[derive(Queryable, Identifiable, Associations)]

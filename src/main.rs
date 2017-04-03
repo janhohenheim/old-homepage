@@ -4,7 +4,8 @@ extern crate iron;
 extern crate homepage;
 
 use iron::Iron;
-use homepage::*;
+use homepage::routing;
+use homepage::presentation::helper::{templating, session};
 
 fn main() {
     let mut chain = routing::create_chain();

@@ -11,8 +11,8 @@ use self::iron::prelude::*;
 use self::hbs::{Template, HandlebarsEngine, DirectorySource, SourceError};
 use self::handlebars::to_json;
 use self::serde_json::Value;
-use session;
 use std::collections::BTreeMap;
+use super::session;
 
 #[derive(Serialize, Debug, PartialEq, Eq)]
 pub enum Section {
@@ -23,7 +23,7 @@ pub enum Section {
 
 pub fn link_to_chain(chain: &mut Chain) -> Result<&mut Chain, SourceError> {
     let mut hbse = HandlebarsEngine::new();
-    hbse.add(Box::new(DirectorySource::new("./res/templates/", ".hbs")));
+    hbse.add(Box::new(DirectorySource::new("./view/", ".hbs")));
     hbse.reload()?;
     Ok(chain.link_after(hbse))
 }
@@ -47,7 +47,7 @@ pub fn generate_site(req: &mut Request,
     }
     let mut base_data = btreemap! {
         "sections".to_string() => to_json(&sections),
-        "parent".to_string() =>  to_json(&"template".to_string()),
+        "parent".to_string() =>  to_json(&"layout/layout".to_string()),
     };
     base_data.append(&mut data);
 

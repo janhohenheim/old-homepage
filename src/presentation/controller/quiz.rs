@@ -4,12 +4,12 @@ extern crate urlencoded;
 extern crate handlebars;
 extern crate handlebars_iron as hbs;
 
-use session;
 use self::iron::{Request, IronResult, Response, status};
 use self::handlebars::to_json;
-use super::dao::*;
-use super::super::util::{get_formdata, to_ironresult};
-use super::super::templating::*;
+use presentation::helper::session;
+use presentation::helper::util::{get_formdata, to_ironresult};
+use presentation::helper::templating::*;
+use data::crud::*;
 
 pub fn get_quiz(req: &mut Request) -> IronResult<Response> {
     if session::get_player(req)?.is_some() {

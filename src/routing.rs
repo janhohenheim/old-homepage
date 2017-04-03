@@ -8,15 +8,15 @@ use self::iron::prelude::*;
 use self::mount::Mount;
 use self::staticfile::Static;
 use std::path::Path;
-use templating::{generate_site_without_data, Section};
-use quiz::controller as quizctrl;
-use login_controller as loginctrl;
+use presentation::helper::templating::{generate_site_without_data, Section};
+use presentation::controller::quiz as quizctrl;
+use presentation::controller::login as loginctrl;
 
 pub fn create_chain() -> Chain {
     let router =
         router!(get_root: get "/" => handle_root,
                          get_contact: get "/contact" => handle_contact,
-                         post_login: post "/login" => loginctrl::handle_login,
+                         post_login: post "/login" => loginctrl::post_login,
                          get_quiz: get "/quiz" => quizctrl::get_quiz,
                          post_quiz: post "/quiz" => quizctrl::post_quiz,
                          get_quiz_play: get "/quiz/play" => quizctrl::get_play,
@@ -27,9 +27,9 @@ pub fn create_chain() -> Chain {
     let mut mount = Mount::new();
     mount.mount("/", router);
     mount
-        .mount("/css", Static::new(Path::new("res/public/css")))
-        .mount("/js", Static::new(Path::new("res/public/js")))
-        .mount("/fonts", Static::new(Path::new("res/public/fonts")));
+        .mount("/css", Static::new(Path::new("public/css")))
+        .mount("/js", Static::new(Path::new("public/js")))
+        .mount("/fonts", Static::new(Path::new("public/fonts")));
 
     Chain::new(mount)
 }

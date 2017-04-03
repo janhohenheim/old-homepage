@@ -1,13 +1,13 @@
 extern crate iron;
 
-use quiz::model::user_account::UserAccount;
-use util::get_formdata;
+use presentation::helper::util::get_formdata;
 use self::iron::{Request, Response, IronResult, status};
 
-pub fn handle_login(req: &mut Request) -> IronResult<Response> {
+pub fn post_login(req: &mut Request) -> IronResult<Response> {
     Ok(Response::with(status::Ok))
 }
 
+/*
 pub fn login(email: String, password: String) -> Option<UserAccount> {
     if &email == "test" && &password == "test" {
         return Some(UserAccount {
@@ -19,3 +19,4 @@ pub fn login(email: String, password: String) -> Option<UserAccount> {
     }
     return None;
 }
+*/

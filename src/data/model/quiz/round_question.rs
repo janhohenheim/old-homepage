@@ -1,6 +1,6 @@
 extern crate chrono;
 
-use super::super::schema::round_question;
+use data::schema::round_question;
 use self::chrono::NaiveDateTime;
 use super::question::Question;
 use super::round::Round;

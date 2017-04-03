@@ -1,4 +1,4 @@
-use super::super::schema::user_account;
+use data::schema::user_account;
 
 #[derive(Queryable, Identifiable)]
 #[table_name="user_account"]

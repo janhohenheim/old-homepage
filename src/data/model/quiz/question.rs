@@ -1,4 +1,4 @@
-use super::super::schema::{question, answer, round_question};
+use data::schema::{question, answer, round_question};
 use super::category::Category;
 
 #[derive(Queryable, Identifiable, Associations)]

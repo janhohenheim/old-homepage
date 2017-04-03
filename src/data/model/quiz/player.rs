@@ -1,4 +1,4 @@
-use super::super::schema::{round, player};
+use data::schema::{round, player};
 
 #[derive(Queryable, Identifiable, Associations)]
 #[has_many(round)]

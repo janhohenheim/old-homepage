@@ -1,17 +1,18 @@
 extern crate dotenv;
 extern crate diesel;
 
-use self::dotenv::dotenv;
 use std::env;
+use self::dotenv::dotenv;
 use self::diesel::prelude::*;
 use self::diesel::pg::PgConnection;
-use super::model::category::*;
-use super::model::player::*;
+use super::model::quiz::category::*;
+use super::model::quiz::player::*;
+use super::schema;
 
 type Result<T> = self::diesel::QueryResult<T>;
 
 pub fn create_player(name: &str) -> Result<Player> {
-    use super::schema::player;
+    use self::schema::player;
     let new_player = NewPlayer { name };
     let conn = establish_connection();
     diesel::insert(&new_player)
@@ -20,7 +21,7 @@ pub fn create_player(name: &str) -> Result<Player> {
 }
 
 pub fn create_category(text: &str) -> Result<Category> {
-    use super::schema::category;
+    use self::schema::category;
     let new_category = NewCategory { text };
     let conn = establish_connection();
     diesel::insert(&new_category)
@@ -29,7 +30,7 @@ pub fn create_category(text: &str) -> Result<Category> {
 }
 
 pub fn get_categories() -> Result<Vec<Category>> {
-    use super::schema::category::dsl::*;
+    use self::schema::category::dsl::*;
     let conn = establish_connection();
     category
         .filter(is_active.eq(true))

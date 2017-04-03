@@ -15,11 +15,9 @@ extern crate maplit;
 
 
 pub mod routing;
-pub mod templating;
-pub mod session;
-pub mod quiz;
-pub mod util;
-pub mod login_controller;
+pub mod presentation;
+pub mod data;
+pub mod business;
 
 
 #[cfg(test)]

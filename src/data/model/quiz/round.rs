@@ -1,4 +1,4 @@
-use super::super::schema::{round, round_question};
+use data::schema::{round, round_question};
 use super::player::Player;
 use super::category::Category;
 

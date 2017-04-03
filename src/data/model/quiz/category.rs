@@ -1,4 +1,4 @@
-use super::super::schema::{category, question};
+use data::schema::{category, question};
 
 #[derive(Queryable, Identifiable, Associations)]
 #[has_many(question)]
