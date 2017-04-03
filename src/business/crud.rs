@@ -1,13 +1,11 @@
-extern crate dotenv;
 extern crate diesel;
 
-use std::env;
-use self::dotenv::dotenv;
+
 use self::diesel::prelude::*;
-use self::diesel::pg::PgConnection;
-use super::model::quiz::category::*;
-use super::model::quiz::player::*;
-use super::schema;
+use data::model::quiz::category::*;
+use data::model::quiz::player::*;
+use data::establish_connection;
+use data::schema;
 
 type Result<T> = self::diesel::QueryResult<T>;
 
@@ -35,12 +33,4 @@ pub fn get_categories() -> Result<Vec<Category>> {
     category
         .filter(is_active.eq(true))
         .load::<Category>(&conn)
-}
-
-fn establish_connection() -> PgConnection {
-    dotenv().ok();
-
-    let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
-    PgConnection::establish(&database_url).expect(&format!("Error connecting to database {}",
-                                                           database_url))
 }

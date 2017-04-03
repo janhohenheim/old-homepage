@@ -10,7 +10,7 @@ use self::handlebars::to_json;
 use presentation::helper::util::{get_formdata, to_ironresult};
 use presentation::helper::templating::*;
 use presentation::model::player::Player;
-use data::crud::*;
+use business::crud::*;
 
 pub fn get_quiz(req: &mut Request) -> IronResult<Response> {
     if get_player_session(req)?.is_some() {
