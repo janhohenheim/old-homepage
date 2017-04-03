@@ -12,6 +12,29 @@ use self::iron_sessionstorage::errors::Error as SessionError;
 use self::redis::{IntoConnectionInfo, ConnectionInfo, RedisResult, ConnectionAddr};
 use self::serde_json::{from_str, to_string};
 
+pub fn link_to_chain(chain: &mut Chain) -> Result<&mut Chain, SessionError> {
+    let backend = RedisBackend::new(RedisConnection)?;
+    let session_storage = SessionStorage::new(backend);
+    Ok(chain.link_around(session_storage))
+}
+
+struct RedisConnection;
+impl IntoConnectionInfo for RedisConnection {
+    fn into_connection_info(self) -> RedisResult<ConnectionInfo> {
+        let addr = ConnectionAddr::Tcp("127.0.0.1".to_string(), 6379);
+        let connection = ConnectionInfo {
+            // A boxed connection address for where to connect to.
+            addr: Box::new(addr),
+            // The database number to use.  This is usually `0`.
+            db: 0,
+            // Optionally a password that should be used for connection.
+            passwd: (None),
+        };
+        Ok(connection)
+    }
+}
+
+
 #[derive(Serialize, Deserialize, Debug, PartialEq, Eq)]
 pub struct Player {
     pub id: i32,
@@ -53,24 +76,41 @@ pub fn create_player(req: &mut Request, id: i32) -> IronResult<()> {
 }
 
 
-pub fn link_to_chain(chain: &mut Chain) -> Result<&mut Chain, SessionError> {
-    let backend = RedisBackend::new(RedisConnection)?;
-    let session_storage = SessionStorage::new(backend);
-    Ok(chain.link_around(session_storage))
+#[derive(Serialize, Deserialize, Debug, PartialEq, Eq)]
+pub struct Admin {
+    pub id: i32,
+    pub name: String,
 }
 
-struct RedisConnection;
-impl IntoConnectionInfo for RedisConnection {
-    fn into_connection_info(self) -> RedisResult<ConnectionInfo> {
-        let addr = ConnectionAddr::Tcp("127.0.0.1".to_string(), 6379);
-        let connection = ConnectionInfo {
-            // A boxed connection address for where to connect to.
-            addr: Box::new(addr),
-            // The database number to use.  This is usually `0`.
-            db: 0,
-            // Optionally a password that should be used for connection.
-            passwd: (None),
-        };
-        Ok(connection)
+impl Admin {
+    pub fn new(id: i32, name: String) -> Self {
+        Admin { id, name }
     }
+}
+
+//TODO: exchange for custom [#derive], maybe do a pr on iron_sessionstorage
+impl iron_sessionstorage::Value for Admin {
+    fn get_key() -> &'static str {
+        "admin"
+    }
+    fn into_raw(self) -> String {
+        to_string(&self).unwrap()
+    }
+    fn from_raw(value: String) -> Option<Self> {
+        if value.is_empty() {
+            None
+        } else {
+            from_str(&value).ok()
+        }
+    }
+}
+
+
+pub fn get_admin(req: &mut Request) -> IronResult<Option<Admin>> {
+    req.session().get::<Admin>()
+}
+
+
+pub fn create_admin(req: &mut Request, id: i32, name: &str) -> IronResult<()> {
+    req.session().set(Admin::new(id, name.to_owned()))
 }

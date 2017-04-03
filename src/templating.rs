@@ -6,10 +6,12 @@ extern crate handlebars_iron as hbs;
 extern crate serde;
 extern crate serde_json;
 
+use self::iron::Request;
 use self::iron::prelude::*;
 use self::hbs::{Template, HandlebarsEngine, DirectorySource, SourceError};
 use self::handlebars::to_json;
 use self::serde_json::Value;
+use session;
 use std::collections::BTreeMap;
 
 #[derive(Serialize, Debug, PartialEq, Eq)]
@@ -34,8 +36,8 @@ struct SectionData {
     is_active: bool,
 }
 
-
-pub fn generate_site(path: &str,
+pub fn generate_site(req: &mut Request,
+                     path: &str,
                      mut data: BTreeMap<String, Value>,
                      section: Option<&Section>)
                      -> Template {
@@ -49,11 +51,24 @@ pub fn generate_site(path: &str,
     };
     base_data.append(&mut data);
 
+    let admin = session::get_admin(req);
+    if let Ok(admin_ok) = admin {
+        if let Some(admin_some) = admin_ok {
+            let mut username = btreemap! {
+                "username".to_owned() => to_json(&admin_some.name)
+            };
+            base_data.append(&mut username);
+        }
+    }
+
     Template::new(path, base_data)
 }
 
-pub fn generate_site_without_data(path: &str, section: Option<&Section>) -> Template {
-    generate_site(path, BTreeMap::new(), section)
+pub fn generate_site_without_data(req: &mut Request,
+                                  path: &str,
+                                  section: Option<&Section>)
+                                  -> Template {
+    generate_site(req, path, BTreeMap::new(), section)
 }
 
 fn get_sections() -> Vec<SectionData> {

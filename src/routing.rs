@@ -33,15 +33,18 @@ pub fn create_chain() -> Chain {
     Chain::new(mount)
 }
 
-fn respond_with_file(filename: &str, section: Option<&Section>) -> IronResult<Response> {
-    let site_template = generate_site_without_data(filename, section);
+fn respond_with_file(req: &mut Request,
+                     filename: &str,
+                     section: Option<&Section>)
+                     -> IronResult<Response> {
+    let site_template = generate_site_without_data(req, filename, section);
     Ok(Response::with((site_template, status::Ok)))
 }
 
-fn handle_root(_: &mut Request) -> IronResult<Response> {
-    respond_with_file("index", Some(&Section::Home))
+fn handle_root(req: &mut Request) -> IronResult<Response> {
+    respond_with_file(req, "index", Some(&Section::Home))
 }
 
-fn handle_contact(_: &mut Request) -> IronResult<Response> {
-    respond_with_file("contact/contact", Some(&Section::Contact))
+fn handle_contact(req: &mut Request) -> IronResult<Response> {
+    respond_with_file(req, "contact/contact", Some(&Section::Contact))
 }
