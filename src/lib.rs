@@ -18,6 +18,8 @@ pub mod routing;
 pub mod templating;
 pub mod session;
 pub mod quiz;
+pub mod util;
+pub mod login_controller;
 
 
 #[cfg(test)]

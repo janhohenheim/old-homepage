@@ -10,12 +10,13 @@ use self::staticfile::Static;
 use std::path::Path;
 use templating::{generate_site_without_data, Section};
 use quiz::controller as quizctrl;
+use login_controller as loginctrl;
 
 pub fn create_chain() -> Chain {
-
     let router =
-        router!(root: get "/" => handle_root,
-                         contact: get "/contact" => handle_contact,
+        router!(get_root: get "/" => handle_root,
+                         get_contact: get "/contact" => handle_contact,
+                         post_login: post "/login" => loginctrl::handle_login,
                          get_quiz: get "/quiz" => quizctrl::get_quiz,
                          post_quiz: post "/quiz" => quizctrl::post_quiz,
                          get_quiz_play: get "/quiz/play" => quizctrl::get_play,

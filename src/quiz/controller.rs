@@ -6,13 +6,10 @@ extern crate handlebars_iron as hbs;
 
 use session;
 use self::iron::{Request, IronResult, Response, status};
-use self::iron::prelude::*;
-use super::dao::*;
-use self::urlencoded::{UrlEncodedBody, UrlDecodingError};
-use std::boxed::Box;
-use super::super::templating::*;
 use self::handlebars::to_json;
-use std::error::Error;
+use super::dao::*;
+use super::super::util::{get_formdata, to_ironresult};
+use super::super::templating::*;
 
 pub fn get_quiz(req: &mut Request) -> IronResult<Response> {
     if session::get_player(req)?.is_some() {
@@ -78,24 +75,3 @@ pub fn post_play(req: &mut Request) -> IronResult<Response> {
 }
 
 
-fn to_ironresult<T, E>(result: Result<T, E>) -> IronResult<T>
-    where E: Send + Error + 'static
-{
-    result.map_err(|err| {
-                       IronError {
-                           error: Box::new(err),
-                           response: Response::with(status::BadRequest),
-                       }
-                   })
-}
-
-fn get_formdata(req: &mut Request, form_id: &str) -> IronResult<String> {
-    let formdata = req.get_ref::<UrlEncodedBody>();
-    let formdata = to_ironresult(formdata)?;
-    let data = formdata.get(form_id)
-        .ok_or(IronError {
-                   error: (Box::new(UrlDecodingError::EmptyQuery)),
-                   response: Response::with(status::BadRequest),
-               })?;
-    Ok(data[0].to_owned())
-}
