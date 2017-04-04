@@ -3,27 +3,50 @@ extern crate iron_sessionstorage;
 
 use self::iron_sessionstorage::traits::*;
 use self::iron::{Request, Response, IronResult, status};
+use self::iron::modifiers::Redirect;
 use presentation::model::admin::Admin;
 use presentation::helper::util::{get_formdata, to_ironresult};
-use business::login::login;
+use business::login::{login, register};
 
 pub fn post_login(req: &mut Request) -> IronResult<Response> {
-    let content_type = mime!(Text / Html);
-    let go_back =
-        Ok(Response::with((content_type, status::Ok, "<script>history.go(-1);</script>")));
-
     if get_admin(req)?.is_some() {
-        return go_back;
+        return Ok(get_to_root(req));
     }
     let email = get_formdata(req, "email")?;
     let pwd = get_formdata(req, "password")?;
     if let Some(user) = to_ironresult(login(&email, &pwd))? {
         create_admin(req, user.id, &user.name)?;
-        return go_back;
+        return Ok(get_to_root(req));
     }
 
     //TODO: Show message for "invalid login"
-    go_back
+    Ok(get_to_root(req))
+}
+
+pub fn post_register(req: &mut Request) -> IronResult<Response> {
+    if get_admin(req)?.is_some() {
+        return Ok(get_to_root(req));
+    }
+
+    let email = get_formdata(req, "email")?;
+    let pwd = get_formdata(req, "password")?;
+    if !email.is_empty() && pwd.len() >= 8 {
+        if let Ok(user) = to_ironresult(register(&email, &email, &pwd)) {
+            create_admin(req, user.id, &user.name)?;
+            return Ok(get_to_root(req));
+        }
+    }
+    //TODO: Show message for "invalid register"
+    Ok(get_to_root(req))
+}
+
+pub fn get_logout(req: &mut Request) -> IronResult<Response> {
+    req.session().clear()?;
+    Ok(get_to_root(req))
+}
+
+fn get_to_root(req: &mut Request) -> Response {
+    Response::with((status::Found, Redirect(url_for!(req, "get_root"))))
 }
 
 pub fn get_admin(req: &mut Request) -> IronResult<Option<Admin>> {
