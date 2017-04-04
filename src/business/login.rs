@@ -4,24 +4,29 @@ use self::diesel::prelude::*;
 use data::schema;
 use data::model::user_account::*;
 use data::establish_connection;
-use super::crypto::{encrypt, decrypt};
+use super::crypto::{encrypt, check};
 
 type LoginResult<T> = self::diesel::QueryResult<T>;
 
 pub fn login(user_email: &str, pwd: &str) -> LoginResult<Option<UserAccount>> {
     use self::schema::user_account::dsl::*;
-
-    let decrypted_password = decrypt(pwd);
     let conn = establish_connection();
-    let mut found_user = user_account.filter(email.eq(user_email))
-        .filter(password.eq(&decrypted_password))
+
+    let mut found_users = user_account
+        .filter(email.eq(user_email))
         .load::<UserAccount>(&conn)?;
 
-    let result = match found_user.is_empty() {
-        true => None,
-        false => Some(found_user.remove(0)),
-    };
-    Ok(result)
+    if found_users.is_empty() {
+        return Ok(None);
+    }
+
+    let found_user = found_users.remove(0);
+    let is_correct_pwd = check(pwd, &found_user.password);
+
+    return match is_correct_pwd {
+        true => Ok(Some(found_user)),
+        false => Ok(None),
+    }
 }
 
 pub fn register(email: &str, name: &str, pwd: &str) -> LoginResult<UserAccount> {
