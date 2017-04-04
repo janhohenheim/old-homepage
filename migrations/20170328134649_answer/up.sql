@@ -1,4 +1,0 @@
-CREATE TABLE answer (
-  id SERIAL PRIMARY KEY,
-  text TEXT NOT NULL
-);

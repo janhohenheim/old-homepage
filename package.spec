@@ -1,5 +1,5 @@
 Name: jnferner
-Version: 0.6.0
+Version: 0.6.2
 Release: 1
 Summary: homepage of Jan Nils Ferner
 License: AGPL3.0
@@ -14,6 +14,8 @@ cp -R ${RPM_SOURCE_DIR}/public ${RPM_BUILD_DIR}
 cp -R ${RPM_SOURCE_DIR}/view ${RPM_BUILD_DIR}
 
 cp ${RPM_SOURCE_DIR}/Cargo.toml ${RPM_BUILD_DIR}
+cp ${RPM_SOURCE_DIR}/Cargo.lock ${RPM_BUILD_DIR}
+cp ${RPM_SOURCE_DIR}/.env ${RPM_BUILD_DIR}
 cargo build --release
 
 %install
@@ -21,7 +23,8 @@ install -m 755 -d ${RPM_BUILD_ROOT}/opt/homepage
 install -m 755 -d ${RPM_BUILD_ROOT}/etc/systemd/system
 install -m 755 -d ${RPM_BUILD_ROOT}/var/www/html
 cp target/release/homepage ${RPM_BUILD_ROOT}/opt/homepage/
-cp -R public ${RPM_BUILD_ROOT}/var/www/html/
+cp .env ${RPM_BUILD_ROOT}/opt/homepage/
+cp -R public/* ${RPM_BUILD_ROOT}/var/www/html/
 cp -R view ${RPM_BUILD_ROOT}/opt/homepage/
 
 %post

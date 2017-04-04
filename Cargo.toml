@@ -1,6 +1,6 @@
 [package]
 name = "homepage"
-version = "0.6.0"
+version = "0.6.2"
 authors = ["Jan Nils Ferner <jn_ferner@hotmail.de>"]
 readme = "README.md"
 homepage = "jnferner.com"
@@ -15,7 +15,7 @@ mime = "0.2"
 router = "0.5"
 mount = "0.3"
 staticfile = "0.4"
-diesel = { version = "0.12", features = ["postgres", "serde_json", "chrono"] }
+diesel = { version = "0.12", features = ["postgres", "extras"] }
 diesel_codegen = { version = "0.12", features = ["postgres"] }
 dotenv = "0.10"
 postgres = "0.14"
