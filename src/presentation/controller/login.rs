@@ -30,20 +30,12 @@ pub fn post_register(req: &mut Request) -> IronResult<Response> {
 
     let email = get_formdata(req, "email")?;
     let pwd = get_formdata(req, "password")?;
-<<<<<<< HEAD
     if !email.is_empty() && pwd.len() >= 8 {
         if let Ok(user) = to_ironresult(register(&email, &email, &pwd)) {
             create_admin(req, user.id, &user.name)?;
             return Ok(get_to_root(req));
         }
     }
-=======
-    if let Ok(user) = to_ironresult(register(&email, &email, &pwd)) {
-        create_admin(req, user.id, &user.name)?;
-        return Ok(get_to_root(req));
-    }
-
->>>>>>> 8e4416c8d1345c80710d9f5fffda5e111a4ab0ed
     //TODO: Show message for "invalid register"
     Ok(get_to_root(req))
 }
