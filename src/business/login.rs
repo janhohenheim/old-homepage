@@ -35,7 +35,5 @@ pub fn register(email: &str, name: &str, pwd: &str) -> LoginResult<UserAccount> 
     };
 
     let conn = establish_connection();
-    diesel::insert(&new_user)
-        .into(user_account::table)
-        .get_result(&conn)
+    diesel::insert(&new_user).into(user_account::table).get_result(&conn)
 }
