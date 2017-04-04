@@ -13,7 +13,7 @@ type Result<T> = self::diesel::QueryResult<T>;
 pub fn create_player(name: &str) -> Result<Player> {
     if name.is_empty() {
         return Err(Error::DatabaseError(DatabaseErrorKind::__Unknown,
-                                             Box::new("Name cannot be empty".to_owned())));
+                                        Box::new("Name cannot be empty".to_owned())));
     }
     use self::schema::player;
     let new_player = NewPlayer { name };
