@@ -1,7 +1,8 @@
-use data::schema::{category, question};
+use data::schema::{category, question, round_category};
 
 #[derive(Queryable, Identifiable, Associations)]
 #[has_many(question)]
+#[has_many(round_category)]
 #[table_name="category"]
 pub struct Category {
     pub id: i32,
