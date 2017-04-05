@@ -9,7 +9,7 @@ use presentation::model::section::Section;
 use presentation::model::rank::Rank;
 
 pub fn get_score(req: &mut Request) -> IronResult<Response> {
-    let dummy = Rank{
+    let dummy = Rank {
         ranking: 1,
         name: "Foo".to_owned(),
         score: 20,
