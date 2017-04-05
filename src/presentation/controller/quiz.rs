@@ -9,6 +9,7 @@ use self::iron_sessionstorage::traits::*;
 use self::handlebars::to_json;
 use presentation::helper::util::{get_formdata, to_ironresult};
 use presentation::helper::templating::*;
+use presentation::model::section::Section;
 use presentation::model::player::Player;
 use business::crud::*;
 

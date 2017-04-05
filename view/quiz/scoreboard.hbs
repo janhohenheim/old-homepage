@@ -15,13 +15,15 @@
             </thead>
             <tbody>
             <tr>
-                <td>1.</td>
-                <td>Foo</td>
-                <td>20</td>
-                <td>40</td>
-                <td>14:00</td>
-                <td>2m</td>
-                <td>Bar, Baz</td>
+                {{#each ranks}}
+                    <td>{{ranking}}</td>
+                    <td>{{name}}</td>
+                    <td>{{score}}</td>
+                    <td>{{points}}</td>
+                    <td>{{start_time}}</td>
+                    <td>{{game_length}}m</td>
+                    <td>{{categories}}</td>
+                {{/each}}
             </tr>
             </tbody>
         </table>

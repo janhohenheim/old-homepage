@@ -11,15 +11,11 @@ use self::iron::prelude::*;
 use self::hbs::{Template, HandlebarsEngine, DirectorySource, SourceError};
 use self::handlebars::to_json;
 use self::serde_json::Value;
+use presentation::model::section::Section;
 use std::collections::BTreeMap;
 use presentation::controller::login::get_admin;
 
-#[derive(Serialize, Debug, PartialEq, Eq)]
-pub enum Section {
-    Home,
-    Quiz,
-    Contact,
-}
+
 
 pub fn link_to_chain(chain: &mut Chain) -> Result<&mut Chain, SourceError> {
     let mut hbse = HandlebarsEngine::new();

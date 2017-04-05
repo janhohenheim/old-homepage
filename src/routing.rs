@@ -8,10 +8,11 @@ use self::iron::prelude::*;
 use self::mount::Mount;
 use self::staticfile::Static;
 use std::path::Path;
-use presentation::helper::templating::{generate_site_without_data, Section};
+use presentation::helper::templating::{generate_site_without_data};
 use presentation::controller::quiz as quizctrl;
 use presentation::controller::login as loginctrl;
 use presentation::controller::score as scorectrl;
+use presentation::model::section::Section;
 
 pub fn create_chain() -> Chain {
     let router =
