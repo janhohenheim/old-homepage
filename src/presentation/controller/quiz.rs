@@ -5,17 +5,18 @@ extern crate handlebars;
 extern crate handlebars_iron as hbs;
 
 use self::iron::{Request, IronResult, Response, status};
-use self::iron_sessionstorage::traits::*;
+use self::iron::modifiers::Redirect;
 use self::handlebars::to_json;
+
 use presentation::helper::util::{get_formdata, to_ironresult};
 use presentation::helper::templating::*;
+use presentation::helper::session::{create_player_session, get_player_session};
 use presentation::model::section::Section;
-use presentation::model::player::Player;
 use business::crud::*;
 
 pub fn get_quiz(req: &mut Request) -> IronResult<Response> {
     if get_player_session(req)?.is_some() {
-        return get_play(req);
+        return redirect_to_play(req);
     }
     let template = generate_site_without_data(req, "quiz/quiz_start", Some(&Section::Quiz));
     Ok(Response::with((template, status::Ok)))
@@ -23,7 +24,7 @@ pub fn get_quiz(req: &mut Request) -> IronResult<Response> {
 
 pub fn post_quiz(req: &mut Request) -> IronResult<Response> {
     if get_player_session(req)?.is_some() || create_player_data(req).is_ok() {
-        return post_play(req);
+        return redirect_to_play(req);
     }
 
     let err = btreemap!{
@@ -40,48 +41,6 @@ fn create_player_data(req: &mut Request) -> IronResult<()> {
     create_player_session(req, new_player.id)
 }
 
-pub fn get_admin(req: &mut Request) -> IronResult<Response> {
-    let categories = get_categories()
-        .unwrap()
-        .into_iter()
-        .map(|x| x.text)
-        .collect::<Vec<String>>();
-    let cat_json = btreemap! {
-        "categories".to_string() => to_json(&categories),
-    };
-    let template = generate_site(req, "quiz/admin", cat_json, Some(&Section::Quiz));
-    Ok(Response::with((template, status::Ok)))
-}
-
-pub fn post_admin(req: &mut Request) -> IronResult<Response> {
-    let category = get_formdata(req, "category")?;
-    let new_category = create_category(&category);
-    to_ironresult(new_category)?;
-    get_admin(req)
-}
-
-pub fn get_play(req: &mut Request) -> IronResult<Response> {
-    if get_player_session(req)?.is_none() {
-        return get_quiz(req);
-    }
-    let template = generate_site_without_data(req, "quiz/quiz_question", Some(&Section::Quiz));
-    Ok(Response::with((template, status::Ok)))
-}
-
-pub fn post_play(req: &mut Request) -> IronResult<Response> {
-    if get_player_session(req)?.is_none() {
-        return get_quiz(req);
-    }
-    let template = generate_site_without_data(req, "quiz/quiz_question", Some(&Section::Quiz));
-    Ok(Response::with((template, status::Ok)))
-}
-
-
-pub fn get_player_session(req: &mut Request) -> IronResult<Option<Player>> {
-    req.session().get::<Player>()
-}
-
-
-pub fn create_player_session(req: &mut Request, id: i32) -> IronResult<()> {
-    req.session().set(Player::new(id))
+fn redirect_to_play(req: &mut Request) -> IronResult<Response> {
+    Ok(Response::with((status::Found, Redirect(url_for!(req, "get_quiz_play")))))
 }

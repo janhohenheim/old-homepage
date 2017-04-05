@@ -3,10 +3,14 @@ extern crate iron_sessionstorage;
 extern crate redis;
 
 use self::iron::prelude::*;
-use self::iron_sessionstorage::SessionStorage;
-use self::iron_sessionstorage::backends::RedisBackend;
-use self::iron_sessionstorage::errors::Error as SessionError;
+use self::iron_sessionstorage as iss;
+use self::iss::SessionStorage;
+use self::iss::backends::RedisBackend;
+use self::iss::errors::Error as SessionError;
+use self::iss::traits::*;
 use self::redis::{IntoConnectionInfo, ConnectionInfo, RedisResult, ConnectionAddr};
+use presentation::model::player::Player;
+
 
 pub fn link_to_chain(chain: &mut Chain) -> Result<&mut Chain, SessionError> {
     let backend = RedisBackend::new(RedisConnection)?;
@@ -28,4 +32,13 @@ impl IntoConnectionInfo for RedisConnection {
         };
         Ok(connection)
     }
+}
+
+pub fn get_player_session(req: &mut Request) -> IronResult<Option<Player>> {
+    req.session().get::<Player>()
+}
+
+
+pub fn create_player_session(req: &mut Request, id: i32) -> IronResult<()> {
+    req.session().set(Player::new(id))
 }
