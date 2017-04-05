@@ -11,6 +11,7 @@ use std::path::Path;
 use presentation::helper::templating::{generate_site_without_data, Section};
 use presentation::controller::quiz as quizctrl;
 use presentation::controller::login as loginctrl;
+use presentation::controller::score as scorectrl;
 
 pub fn create_chain() -> Chain {
     let router =
@@ -22,6 +23,7 @@ pub fn create_chain() -> Chain {
                          get_quiz: get "/quiz" => quizctrl::get_quiz,
                          post_quiz: post "/quiz" => quizctrl::post_quiz,
                          get_quiz_play: get "/quiz/play" => quizctrl::get_play,
+                         get_quiz_score: get "/quiz/score" => scorectrl::get_score,
                          post_quiz_play: post "/quiz/play" => quizctrl::post_play,
                          get_quiz_admin: get "/quiz/admin" => quizctrl::get_admin,
                          post_quiz_admin_post: post "/quiz/admin" => quizctrl::post_admin,);

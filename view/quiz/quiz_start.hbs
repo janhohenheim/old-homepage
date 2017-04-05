@@ -16,7 +16,13 @@
                 <label for="name">Username: </label>
                 <input type="text" class="form-control" name="name" placeholder="Enter your username">
             </div>
-            <button type="submit" class="btn btn-default">Start Quiz</button>
+            <button type="submit" class="btn btn-success">Start Quiz</button>
+        </form>
+
+        <br/>
+
+        <form method="get" action="/quiz/score" class="form-inline">
+            <button type="submit" class="btn btn-info">Scoreboard</button>
         </form>
     </div>
 {{/inline}}
