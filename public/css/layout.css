@@ -1,19 +1,7 @@
-* {
-    box-sizing: inherit;
+.layout {
+    padding: 3rem 2rem;
 }
 
-html {
-    box-sizing: border-box;
-}
-
-body {
-    padding-top: 50px;
-}
-
-.starter-template {
-    padding: 40px 15px;
-    text-align: left;
-}
 
 .radio-button-wrap > input {
     display: none;
@@ -25,9 +13,9 @@ body {
     border: double;
     color: white;
     background: #ffb358;
-    width: 250px;
     padding: 10px 15px;
     text-align: center;
+    width: 400px;
 }
 
 input:checked + .radio-button {

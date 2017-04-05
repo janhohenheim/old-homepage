@@ -1,38 +1,42 @@
 {{#*inline "page"}}
-    <h1 class="page-header">
-        Who is a cool dude?
-    </h1>
 
-
-    <form method="post">
-        <label class="radio-button-wrap">
-            <input type="radio" name="answer" value="0">
-            <span class="radio-button">
-        Me
-    </span>
-        </label>
-        <label class="radio-button-wrap">
-            <input type="radio" name="answer" value="1">
-            <span class="radio-button">
-        You
-    </span>
-        </label>
-        <br/>
-        <label class="radio-button-wrap">
-            <input type="radio" name="answer" value="2">
-            <span class="radio-button">
-        Mr. Baking Stove
-    </span>
-        </label>
-        <label class="radio-button-wrap">
-            <input type="radio" name="answer" value="3">
-            <span class="radio-button">
-        All of the above :)
-    </span>
-        </label>
-        <br/>
-
-        <input class="btn btn-default" type="submit" value="Submit">
-    </form>
+    <div class="container">
+        <h1>Who is a cool dude?</h1>
+        <form method="post">
+            <div class="row">
+                <div class="col">
+                    <label class="radio-button-wrap">
+                        <input type="radio" name="answer" value="0">
+                        <span class="radio-button">Me</span>
+                    </label>
+                </div>
+                <div class="col">
+                    <label class="radio-button-wrap">
+                        <input type="radio" name="answer" value="1">
+                        <span class="radio-button">You</span>
+                    </label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label class="radio-button-wrap">
+                        <input type="radio" name="answer" value="2">
+                        <span class="radio-button">Mr. Baking Stove</span>
+                    </label>
+                </div>
+                <div class="col">
+                    <label class="radio-button-wrap">
+                        <input type="radio" name="answer" value="3">
+                        <span class="radio-button">All of the above :)</span>
+                    </label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <input class="btn btn-primary" type="submit" value="Submit">
+                </div>
+            </div>
+        </form>
+    </div>
 {{/inline}}
 {{~> (parent)~}}

@@ -1,29 +1,20 @@
 {{#*inline "page"}}
-    <div align="center">
-        <h1 class="page-header">Who Wants To Be A Millionaire?</h1>
+        <h1>Who Wants To Be A Millionaire?</h1>
         {{#if error}}
             <div class="alert alert-danger alert-dismissible" role="alert">
-                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
                         aria-hidden="true">&times;</span>
                 </button>
                 Please enter a valid username under 16 characters.
             </div>
         {{/if}}
-
         <form method="post" class="form-inline">
-            <div class="form-group">
-                <label for="name">Username: </label>
-                <input type="text" class="form-control" name="name" placeholder="Enter your username">
-            </div>
-            <button type="submit" class="btn btn-success">Start Quiz</button>
+            <label class="sr-only" for="inlineFormInput">username</label>
+            <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" name="name"  id="inlineFormInput" placeholder="Username">
+            <button type="submit" class="btn btn-primary">Start Quiz</button>
         </form>
 
-        <br/>
 
-        <form method="get" action="/quiz/score" class="form-inline">
-            <button type="submit" class="btn btn-info">Scoreboard</button>
-        </form>
-    </div>
+        <a class="btn btn-secondary" href="/quiz/score" role="button">Scoreboard</a>
 {{/inline}}
 {{~> (parent)~}}

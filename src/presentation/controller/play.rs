@@ -9,7 +9,7 @@ use presentation::helper::templating::*;
 use presentation::model::section::Section;
 use self::iron::modifiers::Redirect;
 
-use presentation::helper::session::{get_player_session};
+use presentation::helper::session::get_player_session;
 
 pub fn get_play(req: &mut Request) -> IronResult<Response> {
     if get_player_session(req)?.is_none() {

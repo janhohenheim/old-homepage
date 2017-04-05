@@ -30,9 +30,7 @@ pub fn create_chain() -> Chain {
 
     let mut mount = Mount::new();
     mount.mount("/", router);
-    mount.mount("/css", Static::new(Path::new("public/css")))
-        .mount("/js", Static::new(Path::new("public/js")))
-        .mount("/fonts", Static::new(Path::new("public/fonts")));
+    mount.mount("/css", Static::new(Path::new("public/css")));
 
     Chain::new(mount)
 }
