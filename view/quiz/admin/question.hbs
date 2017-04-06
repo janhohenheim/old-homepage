@@ -1,19 +1,36 @@
 {{#*inline "page"}}
-<h1>Question</h1>
+    <h1>Question</h1>
 
-{{#each questions}}
-<input type="hidden" name="question_id" value="{{this.id}}">
-<input type="text" name="text" class="form-control mb-2 mr-sm-2 mb-sm-0" value="{{this.text}}">
-    <button type="submit" class="btn btn-info" formaction="/quiz/admin/category/edit">Edit</button>
-    <button type="submit" class="btn btn-danger" formaction="/quiz/admin/category/remove">Remove</button>
-{{#each this.answers}}
-<input type="hidden" name="answer_id" value="{{this.id}}">
-{{this.is_correct}}
-<input type="text" name="text" class="form-control mb-2 mr-sm-2 mb-sm-0" value="{{this.text}}">
-    <button type="submit" class="btn btn-info" formaction="/quiz/admin/category/edit">Edit</button>
-    <button type="submit" class="btn btn-danger" formaction="/quiz/admin/category/remove">Remove</button>
-{{/each}}
-{{/each}}
+    <form class="form-inline" action="/quiz/admin/question/add" method="post">
+        <label class="control-label col-sm-2" for="category_to_add">Category</label>
+        <div class="col-sm-10">
+            <select name="category_to_add" class="form-control" title="Select category">
+                {{#each categories}}
+                    <option value={{this.id}}>{{this.text}}</option>
+                {{/each}}
+            </select>
+        </div>
+        <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" name="new_question" placeholder="New Question">
+        <button type="submit" class="btn btn-success">Add</button>
+    </form>
+
+
+
+    {{#each questions}}
+        <form class="form-inline" method="post">
+            <input type="hidden" name="question_id" value="{{this.id}}">
+            <input type="text" name="text" class="form-control mb-2 mr-sm-2 mb-sm-0" value="{{this.text}}">
+            <button type="submit" class="btn btn-info" formaction="/quiz/admin/question/edit">Edit</button>
+            <button type="submit" class="btn btn-danger" formaction="/quiz/admin/question/remove">Remove</button>
+            {{#each this.answers}}
+                <input type="hidden" name="answer_id" value="{{this.id}}">
+                {{this.is_correct}}
+                <input type="text" name="text" class="form-control mb-2 mr-sm-2 mb-sm-0" value="{{this.text}}">
+                <button type="submit" class="btn btn-info" formaction="/quiz/admin/question/edit">Edit</button>
+                <button type="submit" class="btn btn-danger" formaction="/quiz/admin/question/remove">Remove</button>
+            {{/each}}
+        </form>
+    {{/each}}
 
 {{/inline}}
 {{~> (parent)~}}

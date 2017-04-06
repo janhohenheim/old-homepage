@@ -8,14 +8,14 @@ use super::category::Category;
 #[table_name="question"]
 pub struct Question {
     pub id: i32,
-    pub category_id: i32,
     pub text: String,
+    pub category_id: i32,
     pub is_active: bool,
 }
 
 #[derive(Insertable)]
 #[table_name="question"]
 pub struct NewQuestion<'a> {
-    pub category_id: i32,
     pub text: &'a str,
+    pub category_id: i32,
 }
