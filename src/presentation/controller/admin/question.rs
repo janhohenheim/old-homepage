@@ -69,11 +69,11 @@ pub fn post_question_edit(req: &mut Request) -> IronResult<Response> {
     if session::get_admin(req)?.is_none() {
         return redirect(req, "get_root");
     }
-    let id = get_formdata(req, "id")?;
+    let id = get_formdata(req, "question_id")?;
     let id_as_int = to_ironresult(id.parse::<i32>())?;
-    let text = get_formdata(req, "text")?;
-    let edited_category = rename_category(id_as_int, &text);
-    to_ironresult(edited_category)?;
+    let text = get_formdata(req, "question_text")?;
+    let edited_question = rename_question(id_as_int, &text);
+    to_ironresult(edited_question)?;
     Ok(Response::with((status::Found, Redirect(url_for!(req, "get_quiz_admin_question")))))
 }
 
@@ -82,9 +82,9 @@ pub fn post_question_remove(req: &mut Request) -> IronResult<Response> {
     if session::get_admin(req)?.is_none() {
         return redirect(req, "get_root");
     }
-    let id = get_formdata(req, "id")?;
+    let id = get_formdata(req, "question_id")?;
     let id_as_int = to_ironresult(id.parse::<i32>())?;
-    let deactivated_category = deactivate_category(id_as_int);
+    let deactivated_category = deactivate_question(id_as_int);
     to_ironresult(deactivated_category)?;
     Ok(Response::with((status::Found, Redirect(url_for!(req, "get_quiz_admin_question")))))
 }
