@@ -2,20 +2,23 @@
     padding: 3rem 2rem;
 }
 
+.radio-button-wrap {
+    display: block;
+}
 
 .radio-button-wrap > input {
     display: none;
 }
 
 .radio-button {
-    display: inline-block;
+    box-sizing: border-box;
+    display: block;
     border-radius: 13px;
     border: double;
     color: white;
     background: #ffb358;
     padding: 10px 15px;
     text-align: center;
-    width: 400px;
 }
 
 input:checked + .radio-button {
