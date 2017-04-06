@@ -1,6 +1,6 @@
 [root]
 name = "homepage"
-version = "0.7.7"
+version = "0.7.8"
 dependencies = [
  "chrono 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "clippy 0.0.121 (registry+https://github.com/rust-lang/crates.io-index)",
