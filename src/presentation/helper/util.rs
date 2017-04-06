@@ -4,6 +4,7 @@ extern crate urlencoded;
 use std::error::Error;
 use self::iron::{Request, IronResult, Response, IronError, status};
 use self::iron::prelude::*;
+use self::iron::modifiers::Redirect;
 use self::urlencoded::{UrlEncodedBody, UrlDecodingError};
 
 pub fn get_formdata(req: &mut Request, form_id: &str) -> IronResult<String> {
@@ -27,4 +28,8 @@ pub fn to_ironresult<T, E>(result: Result<T, E>) -> IronResult<T>
                            response: Response::with(status::BadRequest),
                        }
                    })
+}
+
+pub fn redirect(req: &mut Request, route_id: &str) -> IronResult<Response> {
+    Ok(Response::with((status::Found, Redirect(url_for!(req, route_id)))))
 }

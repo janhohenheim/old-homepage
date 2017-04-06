@@ -23,10 +23,21 @@ pub fn create_player(name: &str) -> Result<Player> {
         .get_result(&conn)
 }
 
-pub fn create_category(text: &str) -> Result<Category> {
+pub fn create_category(cat_text: &str) -> Result<Category> {
+    if cat_text.is_empty() {
+        return Err(Error::DatabaseError(DatabaseErrorKind::__Unknown,
+                                        Box::new("Text cannot be empty".to_owned())));
+    }
     use self::schema::category;
-    let new_category = NewCategory { text };
+    use self::schema::category::dsl::*;
     let conn = establish_connection();
+    let already_created_cats = category.filter(text.like(cat_text))
+        .load::<Category>(&conn)?;
+    if !already_created_cats.is_empty() {
+        return activate_category(already_created_cats[0].id);
+    }
+
+    let new_category = NewCategory { text: cat_text };
     diesel::insert(&new_category)
         .into(category::table)
         .get_result(&conn)
@@ -39,4 +50,28 @@ pub fn get_categories() -> Result<Vec<Category>> {
         .filter(is_active.eq(true))
         .order(text.asc())
         .load::<Category>(&conn)
+}
+
+pub fn rename_category(cat_id: i32, cat_text: &str) -> Result<Category> {
+    use self::schema::category::dsl::*;
+    let conn = establish_connection();
+    diesel::update(category.find(cat_id))
+        .set(text.eq(cat_text))
+        .get_result::<Category>(&conn)
+}
+
+pub fn deactivate_category(cat_id: i32) -> Result<Category> {
+    set_category_active_state(cat_id, false)
+}
+
+fn activate_category(cat_id: i32) -> Result<Category> {
+    set_category_active_state(cat_id, true)
+}
+
+fn set_category_active_state(cat_id: i32, state: bool) -> Result<Category> {
+    use self::schema::category::dsl::*;
+    let conn = establish_connection();
+    diesel::update(category.find(cat_id))
+        .set(is_active.eq(state))
+        .get_result::<Category>(&conn)
 }

@@ -25,8 +25,12 @@ pub fn create_chain() -> Chain {
                          get_quiz_play: get "/quiz/play" => play::get_play,
                          post_quiz_play: post "/quiz/play" => play::post_play,
                          get_quiz_score: get "/quiz/score" => score::get_score,
-                         get_quiz_admin: get "/quiz/admin" => admin::get_admin,
-                         post_quiz_admin_post: post "/quiz/admin" => admin::post_admin,);
+                         get_quiz_admin: get "/quiz/admin" => admin::dashboard::get_dashboard,
+                         get_quiz_admin_cat: get "/quiz/admin/category" => admin::category::get_category,
+                         post_quiz_admin_cat_add: post "/quiz/admin/category/add" => admin::category::post_category_add,
+                         post_quiz_admin_cat_edit: post "/quiz/admin/category/edit" => admin::category::post_category_edit,
+                         post_quiz_admin_cat_remove: post "/quiz/admin/category/remove" => admin::category::post_category_remove,
+                         );
 
     let mut mount = Mount::new();
     mount.mount("/", router);
