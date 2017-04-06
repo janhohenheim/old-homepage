@@ -48,11 +48,15 @@
 
 
     {{#each questions }}
-        <form class="form-group" method="post">
+        <form class="form-inline" method="post">
             <input type="hidden" name="question_id" value="{{this.id}}"/>
             <div class="form-inline">
                 <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" name="question_text" value="{{this.text}}">
-                {{category.text}}
+                <select name="category" class="form-control" title="Category">
+                    {{#each categories}}
+                        <option value={{this.id}}>{{this.text}}</option>
+                    {{/each}}
+                </select>
             </div>
             {{#each answers}}
                 <row>
