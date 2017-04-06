@@ -30,6 +30,10 @@ pub fn create_chain() -> Chain {
                          post_quiz_admin_cat_add: post "/quiz/admin/category/add" => admin::category::post_category_add,
                          post_quiz_admin_cat_edit: post "/quiz/admin/category/edit" => admin::category::post_category_edit,
                          post_quiz_admin_cat_remove: post "/quiz/admin/category/remove" => admin::category::post_category_remove,
+                         get_quiz_admin_question: get "/quiz/admin/question" => admin::question::get_question,
+                         post_quiz_admin_question_add: post "/quiz/admin/question/add" => admin::question::post_question_add,
+                         post_quiz_admin_question_edit: post "/quiz/admin/question/edit" => admin::question::post_question_edit,
+                         post_quiz_admin_question_remove: post "/quiz/admin/question/remove" => admin::question::post_question_remove,
                          );
 
     let mut mount = Mount::new();

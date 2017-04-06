@@ -9,7 +9,7 @@ license = "AGPL-3.0"
 
 [dependencies]
 iron = "0.5"
-iron-sessionstorage = { version = "0.6", features = ["redis-backend"] }
+iron-sessionstorage = { version = "0.6" }
 urlencoded = "0.5"
 mime = "0.2"
 router = "0.5"
@@ -25,7 +25,6 @@ handlebars-iron = { version = "0.23", features = ["unstable"] }
 serde = "0.9"
 serde_derive = "0.9"
 serde_json = "0.9"
-redis = "0.7"
 maplit = "0.1"
 rust-crypto = "0.2"
 

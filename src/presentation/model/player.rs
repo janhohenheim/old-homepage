@@ -20,6 +20,7 @@ impl Player {
     }
 }
 
+
 impl iron_sessionstorage::Value for Player {
     fn get_key() -> &'static str {
         "player"
