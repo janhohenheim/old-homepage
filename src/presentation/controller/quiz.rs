@@ -10,12 +10,12 @@ use self::handlebars::to_json;
 
 use presentation::helper::util::{get_formdata, to_ironresult};
 use presentation::helper::templating::*;
-use presentation::helper::session::{create_player_session, get_player_session};
+use presentation::helper::session;
 use presentation::model::section::Section;
 use business::crud::*;
 
 pub fn get_quiz(req: &mut Request) -> IronResult<Response> {
-    if get_player_session(req)?.is_some() {
+    if session::get_player(req)?.is_some() {
         return redirect_to_play(req);
     }
     let template = generate_site_without_data(req, "quiz/quiz_start", Some(&Section::Quiz));
@@ -23,7 +23,7 @@ pub fn get_quiz(req: &mut Request) -> IronResult<Response> {
 }
 
 pub fn post_quiz(req: &mut Request) -> IronResult<Response> {
-    if get_player_session(req)?.is_some() || create_player_data(req).is_ok() {
+    if session::get_player(req)?.is_some() || create_player_data(req).is_ok() {
         return redirect_to_play(req);
     }
 
@@ -38,7 +38,7 @@ fn create_player_data(req: &mut Request) -> IronResult<()> {
     let name = get_formdata(req, "name")?;
     let new_player = create_player(&name);
     let new_player = to_ironresult(new_player)?;
-    create_player_session(req, new_player.id)
+    session::create_player(req, new_player.id)
 }
 
 fn redirect_to_play(req: &mut Request) -> IronResult<Response> {

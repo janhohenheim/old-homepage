@@ -8,11 +8,10 @@ use self::iron::{Request, IronResult, Response, status};
 use presentation::helper::templating::*;
 use presentation::model::section::Section;
 use self::iron::modifiers::Redirect;
-
-use presentation::helper::session::get_player_session;
+use presentation::helper::session;
 
 pub fn get_play(req: &mut Request) -> IronResult<Response> {
-    if get_player_session(req)?.is_none() {
+    if session::get_player(req)?.is_none() {
         return redirect_to_start(req);
     }
     let template = generate_site_without_data(req, "quiz/quiz_question", Some(&Section::Quiz));
@@ -20,7 +19,7 @@ pub fn get_play(req: &mut Request) -> IronResult<Response> {
 }
 
 pub fn post_play(req: &mut Request) -> IronResult<Response> {
-    if get_player_session(req)?.is_none() {
+    if session::get_player(req)?.is_none() {
         return redirect_to_start(req);
     }
     let template = generate_site_without_data(req, "quiz/quiz_question", Some(&Section::Quiz));

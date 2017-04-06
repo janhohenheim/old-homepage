@@ -13,7 +13,7 @@ use self::handlebars::to_json;
 use self::serde_json::Value;
 use presentation::model::section::Section;
 use std::collections::BTreeMap;
-use presentation::controller::login::get_admin;
+use presentation::helper::session::get_admin;
 
 
 
