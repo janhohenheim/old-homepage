@@ -73,7 +73,7 @@ pub fn post_question_add(req: &mut Request) -> IronResult<Response> {
     if session::get_admin(req)?.is_none() {
         return redirect(req, "get_root");
     }
-    if !validate_answers_unique(req, 4)?{
+    if !validate_new_answers(req, 4)?{
         return Ok(Response::with((status::Found, Redirect(url_for!(req, "get_quiz_admin_question")))));
     }
 
@@ -90,9 +90,26 @@ pub fn post_question_add(req: &mut Request) -> IronResult<Response> {
     Ok(Response::with((status::Found, Redirect(url_for!(req, "get_quiz_admin_question")))))
 }
 
-fn validate_answers_unique(req: &mut Request, question_count: i32) -> IronResult<bool> {
+fn validate_new_answers(req: &mut Request, question_count: i32) -> IronResult<bool> {
+    validate_answers_on_forms(req, question_count, "new_correct_answer", "new_answer")
+}
+
+fn validate_edited_answers(req: &mut Request, question_count: i32) -> IronResult<bool> {
+    validate_answers_on_forms(req, question_count, "correct_answer", "answer")
+}
+
+fn validate_answers_on_forms(req: &mut Request,
+                             question_count: i32,
+                             correct_answer: &str,
+                             answer: &str)
+                            -> IronResult<bool> {
+    let correct_index = get_formdata(req, correct_answer)?;
+    let correct_nr = to_ironresult(correct_index.parse::<i32>())?;
+    if correct_nr >= question_count {
+        return Ok(false);
+    }
     let mut answers = Vec::new();
-    let form_name = "new_answer".to_owned();
+    let form_name = answer.to_owned();
     for i in 0..question_count {
         let mut this_name = form_name.clone();
         this_name.push_str(&i.to_string());
@@ -120,14 +137,49 @@ pub fn post_question_edit(req: &mut Request) -> IronResult<Response> {
     if session::get_admin(req)?.is_none() {
         return redirect(req, "get_root");
     }
-    let id = get_formdata(req, "question_id")?;
-    let id_as_int = to_ironresult(id.parse::<i32>())?;
+    if !validate_edited_answers(req, 4)?{
+        return Ok(Response::with((status::Found, Redirect(url_for!(req, "get_quiz_admin_question")))));
+    }
+
+    let question = get_formdata(req, "question_id")?;
+    let question_id = to_ironresult(question.parse::<i32>())?;
     let text = get_formdata(req, "question_text")?;
-    let edited_question = rename_question(id_as_int, &text);
+    let edited_question = rename_question(question_id, &text);
     to_ironresult(edited_question)?;
+
+    let cat = get_formdata(req, "category")?;
+    let cat_id = to_ironresult(cat.parse::<i32>())?;
+    let edited_question = change_question_category(question_id, cat_id);
+    to_ironresult(edited_question)?;
+
+    edit_answer_from_form(req, 0)?;
+    edit_answer_from_form(req, 1)?;
+    edit_answer_from_form(req, 2)?;
+    edit_answer_from_form(req, 3)?;
+
     Ok(Response::with((status::Found, Redirect(url_for!(req, "get_quiz_admin_question")))))
 }
 
+fn edit_answer_from_form(req: &mut Request, nr: i32) -> IronResult<()> {
+    let mut form_name = "answer".to_owned();
+    let mut form_id_name = "answer_id".to_owned();
+    form_name.push_str(&nr.to_string());
+    form_id_name.push_str(&nr.to_string());
+
+    let answer = &get_formdata(req, &form_id_name)?;
+    let answer_id = to_ironresult(answer.parse::<i32>())?;
+    let ans_text = &get_formdata(req, &form_name)?;
+
+    let correct_answer = get_formdata(req, "correct_answer")?;
+    let correct_nr = to_ironresult(correct_answer.parse::<i32>())?;
+
+    let ans = rename_answer(answer_id, &ans_text);
+    to_ironresult(ans)?;
+
+    let ans = change_answer_correct(answer_id, correct_nr == nr);
+    to_ironresult(ans)?;
+    Ok(())
+}
 
 pub fn post_question_remove(req: &mut Request) -> IronResult<Response> {
     if session::get_admin(req)?.is_none() {

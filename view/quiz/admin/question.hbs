@@ -3,7 +3,8 @@
 
     <form class="form-group" action="/quiz/admin/question/add" method="post">
         <div class="form-inline">
-            <textarea  type="text" rows="1" cols="50" class="form-control mb-2 mr-sm-2 mb-sm-0" name="new_question" required placeholder="New Question"></textarea>
+            <textarea type="text" rows="1" cols="50" class="form-control mb-2 mr-sm-2 mb-sm-0" name="new_question"
+                      required placeholder="New Question"></textarea>
             <select id="cat_add" name="category_to_add" class="form-control" required title="Category">
                 {{#each categories}}
                     <option value={{this.id}}>{{this.text}}</option>
@@ -52,19 +53,22 @@
         <form class="form-group" method="post">
             <input type="hidden" name="question_id" value="{{this.id}}"/>
             <div class="form-inline">
-                <textarea  type="text" rows="1" cols="50" required class="form-control mb-2 mr-sm-2 mb-sm-0" name="question_text">{{this.text}}</textarea>
+                <textarea type="text" rows="1" cols="50" required class="form-control mb-2 mr-sm-2 mb-sm-0"
+                          name="question_text">{{this.text}}</textarea>
                 <select name="category" id="{{this.id}}" class="form-control" title="Category">
                     {{#each categories}}
-                        <option value="{{this.id}}" {{#if-eq this.id ../category.id}}selected="selected"{{/if-eq}}>{{this.text}}</option>
+                        <option value="{{this.id}}"
+                                {{#if-eq this.id ../category.id}}selected="selected"{{/if-eq}}>{{this.text}}</option>
                     {{/each}}
                 </select>
             </div>
             {{#each answers}}
                 <row>
-                    <input type="hidden" name="answer_id" value="{{this.id}}"/>
+                    <input type="hidden" name="answer_id{{@index}}" value="{{this.id}}"/>
                     <div class="input-group">
                 <span class="input-group-addon">
-                    <input type="radio" name="correct_answer" required id="{{@index}}" {{#unless this.is_confirmed_wrong}}checked="checked"{{/unless}}>
+                    <input type="radio" name="correct_answer" required value="{{@index}}"
+                           {{#unless this.is_confirmed_wrong}}checked="checked"{{/unless}}>
                 </span>
                         <input type="text" class="form-control" required name="answer{{@index}}" value="{{this.text}}">
                     </div>

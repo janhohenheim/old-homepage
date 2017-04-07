@@ -113,8 +113,20 @@ pub fn get_questions() -> Result<Vec<Question>> {
     let conn = establish_connection();
     question
         .filter(is_active.eq(true))
-        .order(text.asc())
+        .order(category_id.asc())
         .load::<Question>(&conn)
+}
+
+pub fn change_question_category(q_id: i32, cat_id: i32) -> Result<Question> {
+    let conn = establish_connection();
+    {
+        use self::schema::category::dsl::*;
+        category.find(cat_id).first::<Category>(&conn)?;
+    }
+    use self::schema::question::dsl::*;
+    diesel::update(question.find(q_id))
+        .set(category_id.eq(cat_id))
+        .get_result::<Question>(&conn)
 }
 
 pub fn rename_question(q_id: i32, q_text: &str) -> Result<Question> {
@@ -169,7 +181,7 @@ pub fn get_answers(q_id: i32) -> Result<Vec<Answer>> {
     let conn = establish_connection();
     answer
         .filter(question_id.eq(q_id))
-        .order(text.asc())
+        .order(id.asc())
         .load::<Answer>(&conn)
 }
 
@@ -181,3 +193,10 @@ pub fn rename_answer(a_id: i32, a_text: &str) -> Result<Answer> {
         .get_result::<Answer>(&conn)
 }
 
+pub fn change_answer_correct(a_id: i32, state: bool) -> Result<Answer> {
+    use self::schema::answer::dsl::*;
+    let conn = establish_connection();
+    diesel::update(answer.find(a_id))
+        .set(is_correct.eq(state))
+        .get_result::<Answer>(&conn)
+}
