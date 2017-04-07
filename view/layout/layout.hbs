@@ -53,8 +53,8 @@
             </div>
             {{else}}
                 <form class="form-inline my-2 my-md-0" method="post">
-                    <input name="email" type="text" required placeholder="Email" class="form-control mr-sm-2">
-                    <input name="password" type="password" required placeholder="Password" class="form-control mr-sm-2">
+                    <input name="email" type="text"  pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" required title="Enter a valid email" placeholder="Email" class="form-control mr-sm-2">
+                    <input name="password" type="password" pattern=".{8,}" title="8 characters minimum" required placeholder="Password" class="form-control mr-sm-2">
                     <button type="submit" class="btn btn-success" formaction="/login">Sign in</button>
                     <button type="submit" class="btn btn-primary" formaction="/register">Register</button>
                 </form>

@@ -3,7 +3,7 @@
 
     <form class="form-group" action="/quiz/admin/question/add" method="post">
         <div class="form-inline">
-            <textarea type="text" rows="1" cols="50" class="form-control mb-2 mr-sm-2 mb-sm-0" name="new_question"
+            <textarea rows="2" cols="50" maxlength="140" title="140 characters maximum" class="form-control mb-2 mr-sm-2 mb-sm-0" name="new_question"
                       required placeholder="New Question"></textarea>
             <select id="cat_add" name="category_to_add" class="form-control" required title="Category">
                 {{#each categories}}
@@ -16,7 +16,7 @@
                 <span class="input-group-addon">
                     <input type="radio" name="new_correct_answer" value="0">
                 </span>
-                <input type="text" class="form-control" name="new_answer0" required placeholder="First answer">
+                <input type="text" class="form-control"  pattern=".{1,140}" required title="140 characters maximum" name="new_answer0" placeholder="First answer">
             </div>
         </row>
         <row>
@@ -24,7 +24,7 @@
                 <span class="input-group-addon">
                     <input type="radio" name="new_correct_answer" value="1" required>
                 </span>
-                <input type="text" class="form-control" name="new_answer1" required placeholder="Second answer">
+                <input type="text" class="form-control" pattern=".{1,140}" required title="140 characters maximum" name="new_answer1" placeholder="Second answer">
             </div>
         </row>
         <row>
@@ -32,7 +32,7 @@
                 <span class="input-group-addon">
                     <input type="radio" name="new_correct_answer" value="2">
                 </span>
-                <input type="text" class="form-control" name="new_answer2" required placeholder="Third answer">
+                <input type="text" class="form-control" pattern=".{1,140}" required title="140 characters maximum" name="new_answer2" placeholder="Third answer">
             </div>
         </row>
         <row>
@@ -40,7 +40,7 @@
                 <span class="input-group-addon">
                     <input type="radio" name="new_correct_answer" value="3">
                 </span>
-                <input type="text" class="form-control" name="new_answer3" required placeholder="Fourth answer">
+                <input type="text" class="form-control"  pattern=".{1,140}" required title="140 characters maximum"name="new_answer3" placeholder="Fourth answer">
             </div>
         </row>
 
@@ -53,7 +53,7 @@
         <form class="form-group" method="post">
             <input type="hidden" name="question_id" value="{{this.id}}"/>
             <div class="form-inline">
-                <textarea type="text" rows="1" cols="50" required class="form-control mb-2 mr-sm-2 mb-sm-0"
+                <textarea maxlength="140" title="140 characters maximum" rows="2" cols="50" required class="form-control mb-2 mr-sm-2 mb-sm-0"
                           name="question_text">{{this.text}}</textarea>
                 <select name="category" id="{{this.id}}" class="form-control" title="Category">
                     {{#each categories}}
@@ -70,7 +70,7 @@
                     <input type="radio" name="correct_answer" required value="{{@index}}"
                            {{#unless this.is_confirmed_wrong}}checked="checked"{{/unless}}>
                 </span>
-                        <input type="text" class="form-control" required name="answer{{@index}}" value="{{this.text}}">
+                        <input type="text" class="form-control" maxlength="140"  pattern=".{1,140}" required title="140 characters maximum" name="answer{{@index}}" value="{{this.text}}">
                     </div>
                 </row>
             {{/each}}

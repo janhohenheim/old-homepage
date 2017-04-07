@@ -5,6 +5,7 @@ use data::schema;
 use data::model::user_account::*;
 use data::establish_connection;
 use super::crypto::{encrypt, check};
+use self::diesel::result::{Error, DatabaseErrorKind};
 
 type LoginResult<T> = self::diesel::QueryResult<T>;
 
@@ -29,6 +30,11 @@ pub fn login(user_email: &str, pwd: &str) -> LoginResult<Option<UserAccount>> {
 }
 
 pub fn register(email: &str, name: &str, pwd: &str) -> LoginResult<UserAccount> {
+    if pwd.is_empty() || pwd.len() < 8 {
+        return Err(Error::DatabaseError(DatabaseErrorKind::__Unknown,
+                                        Box::new("Password too short".to_owned())));
+    }
+
     use self::schema::user_account;
 
     let encrypted_password = encrypt(pwd);
