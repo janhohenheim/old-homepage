@@ -4,6 +4,7 @@ use self::diesel::prelude::*;
 use data::model::quiz::category::*;
 use data::model::quiz::player::*;
 use data::model::quiz::question::*;
+use data::model::quiz::answer::*;
 use data::establish_connection;
 use data::schema;
 use self::diesel::result::{Error, DatabaseErrorKind};
@@ -48,8 +49,7 @@ pub fn get_category(cat_id: i32) -> Result<Category> {
     let conn = establish_connection();
     Ok(category
            .find(cat_id)
-           .load::<Category>(&conn)?
-           .remove(0))
+           .first(&conn)?)
 }
 
 pub fn get_categories() -> Result<Vec<Category>> {
@@ -94,10 +94,8 @@ pub fn create_question(q_category_id: i32, q_text: &str) -> Result<Question> {
     use self::schema::question::dsl::*;
     let conn = establish_connection();
 
-    let already_created_qs = question.filter(text.like(q_text))
-        .load::<Question>(&conn)?;
-    if !already_created_qs.is_empty() {
-        return activate_question(already_created_qs[0].id);
+    if let Ok(q) = question.filter(text.like(q_text)).first::<Question>(&conn) {
+        return activate_question(q.id);
     }
 
     let new_question = NewQuestion {
@@ -141,3 +139,39 @@ fn set_question_active_state(q_id: i32, state: bool) -> Result<Question> {
         .set(is_active.eq(state))
         .get_result::<Question>(&conn)
 }
+/*
+pub fn get_answers(question_id: i32) -> Result<Vec<Answer>> {
+    use self::schema::question::dsl::*;
+    let conn = establish_connection();
+    let question = users::find(question_id).first(&connection)?;
+    let posts = Post::belonging_to(&user).load(&connection);
+    question
+        .filter(is_active.eq(true))
+        .order(text.asc())
+        .load::<Question>(&conn)
+}
+
+pub fn rename_answer(a_id: i32, a_text: &str) -> Result<Answer> {
+    use self::schema::question::dsl::*;
+    let conn = establish_connection();
+    diesel::update(question.find(q_id))
+        .set(text.eq(q_text))
+        .get_result::<Question>(&conn)
+}
+
+pub fn deactivate_answer(a_id: i32) -> Result<Answer> {
+    set_question_active_state(a_id, false)
+}
+
+fn activate_answer(a_id: i32) -> Result<Answer> {
+    set_question_active_state(a_id, true)
+}
+
+fn set_answer_active_state(a_id: i32, state: bool) -> Result<Answer> {
+    use self::schema::question::dsl::*;
+    let conn = establish_connection();
+    diesel::update(question.find(a_id))
+        .set(is_active.eq(state))
+        .get_result::<Question>(&conn)
+}
+*/

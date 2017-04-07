@@ -16,16 +16,12 @@ use std::collections::BTreeMap;
 use presentation::helper::session::get_admin;
 
 fn if_eq (h: &Helper, hbs: &Handlebars, rc: &mut RenderContext) -> Result<(), RenderError> {
-    println!("aht");
     let param0 =
         h.param(0).ok_or_else(|| RenderError::new("First param not found for helper \"if-eq\""))?;
     let param1 =
         h.param(1).ok_or_else(|| RenderError::new("Second param not found for helper \"if-eq\""))?;
 
     let value = param0.value() == param1.value();
-    println!("{}", value);
-
-
     let tmpl = if value { h.template() } else { h.inverse() };
     match tmpl {
         Some(ref template) => template.render(hbs, rc),

@@ -3,8 +3,8 @@
 
     <form class="form-group" action="/quiz/admin/question/add" method="post">
         <div class="form-inline">
-            <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" name="new_question" placeholder="New Question">
-            <select name="category_to_add" class="form-control" title="Category">
+            <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" name="new_question" required placeholder="New Question">
+            <select id="cat_add" name="category_to_add" class="form-control" required title="Category">
                 {{#each categories}}
                     <option value={{this.id}}>{{this.text}}</option>
                 {{/each}}
@@ -21,7 +21,7 @@
         <row>
             <div class="input-group">
                 <span class="input-group-addon">
-                    <input type="radio" name="new_correct_answer" id="1">
+                    <input type="radio" name="new_correct_answer" id="1" required>
                 </span>
                 <input type="text" class="form-control" name="new_answer1" placeholder="Second answer">
             </div>
@@ -48,15 +48,16 @@
 
 
     {{#each questions }}
-        <form class="form-inline" method="post">
+        <form class="form-group" method="post">
             <input type="hidden" name="question_id" value="{{this.id}}"/>
             <div class="form-inline">
                 <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" name="question_text" value="{{this.text}}">
                 <select name="category" class="form-control" title="Category">
                     {{#each categories}}
-                        <option value={{this.id}} {{#if-eq this.id ../id}}selected{{/if-eq}}>{{this.text}}</option>
+                        <option value={{this.id}}>{{this.text}}</option>
                     {{/each}}
                 </select>
+                    <div class="card-block">Current: {{category.text}}</div>
             </div>
             {{#each answers}}
                 <row>
