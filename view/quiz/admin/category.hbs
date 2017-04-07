@@ -1,19 +1,21 @@
 {{#*inline "page"}}
-<h1>Category</h1>
+    <h1>Category</h1>
 
-<form class="form-inline" action="/quiz/admin/category/add" method="post">
-    <input type="text" maxlength="140" class="form-control mb-2 mr-sm-2 mb-sm-0" required name="new_category" placeholder="New Category">
-    <button type="submit" class="btn btn-success">Add</button>
-</form>
+    <form class="form-inline" action="/quiz/admin/category/add" method="post">
+        <input type="text" maxlength="140" class="form-control mb-2 mr-sm-2 mb-sm-0" required name="new_category"
+               placeholder="New Category">
+        <button type="submit" class="btn btn-success">Add</button>
+    </form>
 
-{{#each categories}}
-<form class="form-inline" method="post">
-    <input type="hidden" name="id" value="{{this.id}}">
-    <input type="text" maxlength="140"  pattern=".{1,140}" required title="140 characters maximum" name="text" class="form-control mb-2 mr-sm-2 mb-sm-0" value="{{this.text}}">
-    <button type="submit" class="btn btn-info" formaction="/quiz/admin/category/edit">Edit</button>
-    <button type="submit" class="btn btn-danger" formaction="/quiz/admin/category/remove">Remove</button>
-</form>
-{{/each}}
+    {{#each categories}}
+        <form class="form-inline" method="post">
+            <input type="hidden" name="id" value="{{this.id}}">
+            <input type="text" maxlength="140" pattern=".{1,140}" required title="140 characters maximum" name="text"
+                   class="form-control mb-2 mr-sm-2 mb-sm-0" value="{{this.text}}">
+            <button type="submit" class="btn btn-info" formaction="/quiz/admin/category/edit">Edit</button>
+            <button type="submit" class="btn btn-danger" formaction="/quiz/admin/category/remove">Remove</button>
+        </form>
+    {{/each}}
 
 
 {{/inline}}

@@ -21,6 +21,10 @@
     text-align: center;
 }
 
+.admin-button {
+    margin: 5px;
+}
+
 input:checked + .radio-button {
     background: #ff7711;
 }

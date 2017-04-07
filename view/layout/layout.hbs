@@ -17,7 +17,7 @@
 
     <!-- Custom styles for this template -->
     <link href="/css/layout.css" rel="stylesheet">
-    <link href="/css/docs.min.css" rel="stylesheet">  
+    <link href="/css/docs.min.css" rel="stylesheet">
 </head>
 
 <body>
@@ -36,12 +36,11 @@
                 </li>
             {{/each}}
         </ul>
-            {{#if username}}
-
-                <div class="nav navbar-nav navbar-right">
+        {{#if username}}
+            <div class="nav navbar-nav navbar-right">
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle active" id="navbarDropdownMenuLink" data-toggle="dropdown"
-                        aria-haspopup="true" aria-expanded="false">
+                       aria-haspopup="true" aria-expanded="false">
                         {{username}}
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
@@ -51,14 +50,16 @@
                     </div>
                 </li>
             </div>
-            {{else}}
-                <form class="form-inline my-2 my-md-0" method="post">
-                    <input name="email" type="text"  pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" required title="Enter a valid email" placeholder="Email" class="form-control mr-sm-2">
-                    <input name="password" type="password" pattern=".{8,}" title="8 characters minimum" required placeholder="Password" class="form-control mr-sm-2">
-                    <button type="submit" class="btn btn-success" formaction="/login">Sign in</button>
-                    <button type="submit" class="btn btn-primary" formaction="/register">Register</button>
-                </form>
-            {{/if}}
+        {{else}}
+            <form class="form-inline my-2 my-md-0" method="post">
+                <input name="email" type="text" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" required
+                       title="Enter a valid email" placeholder="Email" class="form-control mr-sm-2">
+                <input name="password" type="password" pattern=".{8,}" title="8 characters minimum" required
+                       placeholder="Password" class="form-control mr-sm-2">
+                <button type="submit" class="btn btn-success" formaction="/login">Sign in</button>
+                <button type="submit" class="btn btn-primary" formaction="/register">Register</button>
+            </form>
+        {{/if}}
     </div>
 </nav>
 
