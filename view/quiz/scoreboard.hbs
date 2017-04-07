@@ -21,8 +21,16 @@
                     <td>{{score}}</td>
                     <td>{{points}}</td>
                     <td>{{game_start}}</td>
-                    <td>{{game_length}}m</td>
+                    <td>{{game_length}}</td>
                     <td>{{categories}}</td>
+                    {{#if username}}
+                        <td>
+                            <form method="post" action="quiz/score/remove">
+                                <input type="hidden" name="id" value="{{this.id}}">
+                                <button type="submit" class="btn btn-danger">Remove</button>
+                            </form>
+                        </td>
+                    {{/if}}
                 {{/each}}
             </tr>
             </tbody>

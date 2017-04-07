@@ -25,6 +25,7 @@ pub fn create_chain() -> Chain {
                          get_quiz_play: get "/quiz/play" => play::get_play,
                          post_quiz_play: post "/quiz/play" => play::post_play,
                          get_quiz_score: get "/quiz/score" => score::get_score,
+                         post_quiz_score_remove: get "/quiz/score/remove" => score::post_score_remove,
                          get_quiz_admin: get "/quiz/admin" => admin::dashboard::get_dashboard,
                          get_quiz_admin_cat: get "/quiz/admin/category" => admin::category::get_category,
                          post_quiz_admin_cat_add: post "/quiz/admin/category/add" => admin::category::post_category_add,
