@@ -40,6 +40,7 @@ pub fn get_question(req: &mut Request) -> IronResult<Response> {
                     id: category.id,
                     text: category.text,
                 },
+                categories: &categories,
                 answers: vec![],
             }
         })

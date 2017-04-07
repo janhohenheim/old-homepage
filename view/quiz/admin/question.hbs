@@ -54,7 +54,7 @@
                 <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" name="question_text" value="{{this.text}}">
                 <select name="category" class="form-control" title="Category">
                     {{#each categories}}
-                        <option value={{this.id}}>{{this.text}}</option>
+                        <option value={{this.id}} {{#if-eq this.id ../id}}selected{{/if-eq}}>{{this.text}}</option>
                     {{/each}}
                 </select>
             </div>
