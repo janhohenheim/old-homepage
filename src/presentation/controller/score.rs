@@ -3,12 +3,14 @@ extern crate router;
 extern crate handlebars;
 
 use self::iron::{Request, IronResult, Response, status};
+use self::iron::modifiers::Redirect;
 use self::handlebars::to_json;
 use presentation::helper::templating::*;
 use presentation::model::section::Section;
 use presentation::model::rank::Rank;
 use presentation::helper::session;
 use presentation::helper::util::{get_formdata, to_ironresult, redirect};
+use business::crud::remove_round;
 
 pub fn get_score(req: &mut Request) -> IronResult<Response> {
     let dummy = Rank {
@@ -39,6 +41,6 @@ pub fn post_score_remove(req: &mut Request) -> IronResult<Response> {
 
     let id = get_formdata(req, "id")?;
     let id_as_int = to_ironresult(id.parse::<i32>())?;
-    to_ironresult(remove_score(id_as_int))?;
+    to_ironresult(remove_round(id_as_int))?;
     Ok(Response::with((status::Found, Redirect(url_for!(req, "get_quiz_score")))))
 }

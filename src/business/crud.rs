@@ -212,3 +212,11 @@ pub fn change_answer_correct(a_id: i32, state: bool) -> Result<Answer> {
         .set(is_correct.eq(state))
         .get_result::<Answer>(&conn)
 }
+
+pub fn remove_round(score_id: i32) -> Result<bool> {
+    use self::schema::round::dsl::*;
+    let conn = establish_connection();
+    let num_deleted = diesel::delete(round.find(score_id))
+        .execute(&conn)?;
+    Ok(num_deleted != 0)
+}

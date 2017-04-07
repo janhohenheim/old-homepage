@@ -11,6 +11,11 @@
                 <th>Game Start</th>
                 <th>Game Length</th>
                 <th>Chosen Categories</th>
+                {{#if username}}
+                    <th>
+                        Action
+                    </th>
+                {{/if}}
             </tr>
             </thead>
             <tbody>
@@ -23,7 +28,7 @@
                     <td>{{game_start}}</td>
                     <td>{{game_length}}</td>
                     <td>{{categories}}</td>
-                    {{#if username}}
+                    {{#if ../username}}
                         <td>
                             <form method="post" action="quiz/score/remove">
                                 <input type="hidden" name="id" value="{{this.id}}">
