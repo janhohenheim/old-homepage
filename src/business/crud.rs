@@ -32,10 +32,13 @@ pub fn create_category(cat_text: &str) -> Result<Category> {
     use self::schema::category;
     use self::schema::category::dsl::*;
     let conn = establish_connection();
-    let already_created_cats = category.filter(text.like(cat_text))
-        .load::<Category>(&conn)?;
+    let already_created_cats = category
+            .filter(text.eq(cat_text))
+            .filter(is_active.eq(true))
+            .load::<Category>(&conn)?;
     if !already_created_cats.is_empty() {
-        return activate_category(already_created_cats[0].id);
+        return Err(Error::DatabaseError(DatabaseErrorKind::__Unknown,
+                                        Box::new("Text cannot be empty".to_owned())));
     }
 
     let new_category = NewCategory { text: cat_text };
@@ -70,20 +73,13 @@ pub fn rename_category(cat_id: i32, cat_text: &str) -> Result<Category> {
 }
 
 pub fn deactivate_category(cat_id: i32) -> Result<Category> {
-    set_category_active_state(cat_id, false)
-}
-
-fn activate_category(cat_id: i32) -> Result<Category> {
-    set_category_active_state(cat_id, true)
-}
-
-fn set_category_active_state(cat_id: i32, state: bool) -> Result<Category> {
     use self::schema::category::dsl::*;
     let conn = establish_connection();
     diesel::update(category.find(cat_id))
-        .set(is_active.eq(state))
+        .set(is_active.eq(false))
         .get_result::<Category>(&conn)
 }
+
 
 pub fn create_question(q_category_id: i32, q_text: &str) -> Result<Question> {
     if q_text.is_empty() {
@@ -94,8 +90,13 @@ pub fn create_question(q_category_id: i32, q_text: &str) -> Result<Question> {
     use self::schema::question::dsl::*;
     let conn = establish_connection();
 
-    if let Ok(q) = question.filter(text.like(q_text)).first::<Question>(&conn) {
-        return activate_question(q.id);
+    let already_created_qs = question
+        .filter(text.eq(q_text))
+        .filter(is_active.eq(true))
+        .load::<Question>(&conn)?;
+    if !already_created_qs.is_empty() {
+        return Err(Error::DatabaseError(DatabaseErrorKind::__Unknown,
+                                        Box::new("Text cannot be empty".to_owned())));
     }
 
     let new_question = NewQuestion {
@@ -125,18 +126,10 @@ pub fn rename_question(q_id: i32, q_text: &str) -> Result<Question> {
 }
 
 pub fn deactivate_question(q_id: i32) -> Result<Question> {
-    set_question_active_state(q_id, false)
-}
-
-fn activate_question(q_id: i32) -> Result<Question> {
-    set_question_active_state(q_id, true)
-}
-
-fn set_question_active_state(q_id: i32, state: bool) -> Result<Question> {
     use self::schema::question::dsl::*;
     let conn = establish_connection();
     diesel::update(question.find(q_id))
-        .set(is_active.eq(state))
+        .set(is_active.eq(false))
         .get_result::<Question>(&conn)
 }
 
@@ -151,7 +144,16 @@ pub fn create_answer(a_question_id: i32, a_text: &str, a_is_correct: bool) -> Re
         question.find(a_question_id).first::<Question>(&conn)?;
     }
     use self::schema::answer;
-
+    use self::schema::answer::dsl::*;
+    let already_created_as = answer
+        .filter(text.eq(a_text))
+        .filter(question_id.eq(a_question_id))
+        .filter(is_active.eq(true))
+        .load::<Answer>(&conn)?;
+    if !already_created_as.is_empty() {
+        return Err(Error::DatabaseError(DatabaseErrorKind::__Unknown,
+                                        Box::new("Text cannot be empty".to_owned())));
+    }
     let new_answer = NewAnswer {
         text: a_text,
         is_correct: a_is_correct,

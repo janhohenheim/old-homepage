@@ -73,6 +73,10 @@ pub fn post_question_add(req: &mut Request) -> IronResult<Response> {
     if session::get_admin(req)?.is_none() {
         return redirect(req, "get_root");
     }
+    if !validate_answers_unique(req, 4)?{
+        return Ok(Response::with((status::Found, Redirect(url_for!(req, "get_quiz_admin_question")))));
+    }
+
     let category = get_formdata(req, "category_to_add")?;
     let category_as_int = to_ironresult(category.parse::<i32>())?;
     let question = get_formdata(req, "new_question")?;
@@ -85,6 +89,21 @@ pub fn post_question_add(req: &mut Request) -> IronResult<Response> {
 
     Ok(Response::with((status::Found, Redirect(url_for!(req, "get_quiz_admin_question")))))
 }
+
+fn validate_answers_unique(req: &mut Request, question_count: i32) -> IronResult<bool> {
+    let mut answers = Vec::new();
+    let form_name = "new_answer".to_owned();
+    for i in 0..question_count {
+        let mut this_name = form_name.clone();
+        this_name.push_str(&i.to_string());
+        answers.push(get_formdata(req, &this_name)?);
+    }
+    let orig_len = answers.len();
+    answers.sort();
+    answers.dedup();
+    return Ok(answers.len() == orig_len)
+}
+
 fn create_answer_from_form(req: &mut Request, nr: i32, question_id: i32) -> IronResult<()> {
     let mut form_name = "new_answer".to_owned();
     form_name.push_str(&nr.to_string());
