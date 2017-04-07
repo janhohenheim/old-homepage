@@ -1,5 +1,5 @@
 Name: jnferner
-Version: 0.8.0
+Version: 0.8.1
 Release: 1
 Summary: homepage of Jan Nils Ferner
 License: AGPL3.0

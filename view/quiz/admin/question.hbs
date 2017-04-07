@@ -3,7 +3,7 @@
 
     <form class="form-group" action="/quiz/admin/question/add" method="post">
         <div class="form-inline">
-            <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" name="new_question" required placeholder="New Question">
+            <textarea  type="text" rows="1" cols="50" class="form-control mb-2 mr-sm-2 mb-sm-0" name="new_question" required placeholder="New Question"></textarea>
             <select id="cat_add" name="category_to_add" class="form-control" required title="Category">
                 {{#each categories}}
                     <option value={{this.id}}>{{this.text}}</option>
@@ -15,7 +15,7 @@
                 <span class="input-group-addon">
                     <input type="radio" name="new_correct_answer" value="0">
                 </span>
-                <input type="text" class="form-control" name="new_answer0" placeholder="First answer">
+                <input type="text" class="form-control" name="new_answer0" required placeholder="First answer">
             </div>
         </row>
         <row>
@@ -23,7 +23,7 @@
                 <span class="input-group-addon">
                     <input type="radio" name="new_correct_answer" value="1" required>
                 </span>
-                <input type="text" class="form-control" name="new_answer1" placeholder="Second answer">
+                <input type="text" class="form-control" name="new_answer1" required placeholder="Second answer">
             </div>
         </row>
         <row>
@@ -31,7 +31,7 @@
                 <span class="input-group-addon">
                     <input type="radio" name="new_correct_answer" value="2">
                 </span>
-                <input type="text" class="form-control" name="new_answer2" placeholder="Third answer">
+                <input type="text" class="form-control" name="new_answer2" required placeholder="Third answer">
             </div>
         </row>
         <row>
@@ -39,7 +39,7 @@
                 <span class="input-group-addon">
                     <input type="radio" name="new_correct_answer" value="3">
                 </span>
-                <input type="text" class="form-control" name="new_answer3" placeholder="Fourth answer">
+                <input type="text" class="form-control" name="new_answer3" required placeholder="Fourth answer">
             </div>
         </row>
 
@@ -52,7 +52,7 @@
         <form class="form-group" method="post">
             <input type="hidden" name="question_id" value="{{this.id}}"/>
             <div class="form-inline">
-                <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" name="question_text" value="{{this.text}}">
+                <textarea  type="text" rows="1" cols="50" required class="form-control mb-2 mr-sm-2 mb-sm-0" name="question_text">{{this.text}}</textarea>
                 <select name="category" id="{{this.id}}" class="form-control" title="Category">
                     {{#each categories}}
                         <option value="{{this.id}}" {{#if-eq this.id ../category.id}}selected="selected"{{/if-eq}}>{{this.text}}</option>
@@ -64,9 +64,9 @@
                     <input type="hidden" name="answer_id" value="{{this.id}}"/>
                     <div class="input-group">
                 <span class="input-group-addon">
-                    <input type="radio" name="correct_answer" id="{{@index}}" {{#unless this.is_confirmed_wrong}}checked="checked"{{/unless}}>
+                    <input type="radio" name="correct_answer" required id="{{@index}}" {{#unless this.is_confirmed_wrong}}checked="checked"{{/unless}}>
                 </span>
-                        <input type="text" class="form-control" name="answer{{@index}}" value="{{this.text}}">
+                        <input type="text" class="form-control" required name="answer{{@index}}" value="{{this.text}}">
                     </div>
                 </row>
             {{/each}}
