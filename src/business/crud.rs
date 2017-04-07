@@ -139,39 +139,43 @@ fn set_question_active_state(q_id: i32, state: bool) -> Result<Question> {
         .set(is_active.eq(state))
         .get_result::<Question>(&conn)
 }
-/*
-pub fn get_answers(question_id: i32) -> Result<Vec<Answer>> {
-    use self::schema::question::dsl::*;
+
+pub fn create_answer(a_question_id: i32, a_text: &str, a_is_correct: bool) -> Result<Answer> {
     let conn = establish_connection();
-    let question = users::find(question_id).first(&connection)?;
-    let posts = Post::belonging_to(&user).load(&connection);
-    question
-        .filter(is_active.eq(true))
+    if a_text.is_empty() {
+        return Err(Error::DatabaseError(DatabaseErrorKind::__Unknown,
+                                        Box::new("Text cannot be empty".to_owned())));
+    }
+    {
+        use self::schema::question::dsl::*;
+        question.find(a_question_id).first::<Question>(&conn)?;
+    }
+    use self::schema::answer;
+
+    let new_answer = NewAnswer {
+        text: a_text,
+        is_correct: a_is_correct,
+        question_id: a_question_id,
+    };
+    diesel::insert(&new_answer)
+        .into(answer::table)
+        .get_result(&conn)
+}
+
+pub fn get_answers(q_id: i32) -> Result<Vec<Answer>> {
+    use self::schema::answer::dsl::*;
+    let conn = establish_connection();
+    answer
+        .filter(question_id.eq(q_id))
         .order(text.asc())
-        .load::<Question>(&conn)
+        .load::<Answer>(&conn)
 }
 
 pub fn rename_answer(a_id: i32, a_text: &str) -> Result<Answer> {
-    use self::schema::question::dsl::*;
+    use self::schema::answer::dsl::*;
     let conn = establish_connection();
-    diesel::update(question.find(q_id))
-        .set(text.eq(q_text))
-        .get_result::<Question>(&conn)
+    diesel::update(answer.find(a_id))
+        .set(text.eq(a_text))
+        .get_result::<Answer>(&conn)
 }
 
-pub fn deactivate_answer(a_id: i32) -> Result<Answer> {
-    set_question_active_state(a_id, false)
-}
-
-fn activate_answer(a_id: i32) -> Result<Answer> {
-    set_question_active_state(a_id, true)
-}
-
-fn set_answer_active_state(a_id: i32, state: bool) -> Result<Answer> {
-    use self::schema::question::dsl::*;
-    let conn = establish_connection();
-    diesel::update(question.find(a_id))
-        .set(is_active.eq(state))
-        .get_result::<Question>(&conn)
-}
-*/

@@ -13,7 +13,7 @@
         <row>
             <div class="input-group">
                 <span class="input-group-addon">
-                    <input type="radio" name="new_correct_answer" id="0">
+                    <input type="radio" name="new_correct_answer" value="0">
                 </span>
                 <input type="text" class="form-control" name="new_answer0" placeholder="First answer">
             </div>
@@ -21,7 +21,7 @@
         <row>
             <div class="input-group">
                 <span class="input-group-addon">
-                    <input type="radio" name="new_correct_answer" id="1" required>
+                    <input type="radio" name="new_correct_answer" value="1" required>
                 </span>
                 <input type="text" class="form-control" name="new_answer1" placeholder="Second answer">
             </div>
@@ -29,7 +29,7 @@
         <row>
             <div class="input-group">
                 <span class="input-group-addon">
-                    <input type="radio" name="new_correct_answer" id="2">
+                    <input type="radio" name="new_correct_answer" value="2">
                 </span>
                 <input type="text" class="form-control" name="new_answer2" placeholder="Third answer">
             </div>
@@ -37,7 +37,7 @@
         <row>
             <div class="input-group">
                 <span class="input-group-addon">
-                    <input type="radio" name="new_correct_answer" id="3">
+                    <input type="radio" name="new_correct_answer" value="3">
                 </span>
                 <input type="text" class="form-control" name="new_answer3" placeholder="Fourth answer">
             </div>
@@ -48,6 +48,7 @@
 
 
     {{#each questions }}
+        <hr/>
         <form class="form-group" method="post">
             <input type="hidden" name="question_id" value="{{this.id}}"/>
             <div class="form-inline">
@@ -64,12 +65,13 @@
                     <input type="hidden" name="answer_id" value="{{this.id}}"/>
                     <div class="input-group">
                 <span class="input-group-addon">
-                    <input type="radio" name="correct_answer" id="{{@index}} {{#if this.is_correct}}checked{{/if}}">
+                    <input type="radio" name="correct_answer" id="{{@index}} {{#unless this.is_confirmed_wrong}}checked{{/unless}}">
                 </span>
                         <input type="text" class="form-control" name="answer{{@index}}" value="{{this.text}}">
                     </div>
                 </row>
             {{/each}}
+            <br/>
             <button type="submit" class="btn btn-info" formaction="/quiz/admin/question/edit">Edit</button>
             <button type="submit" class="btn btn-danger" formaction="/quiz/admin/question/remove">Remove</button>
         </form>

@@ -6,9 +6,9 @@ use super::question::Question;
 #[table_name="answer"]
 pub struct Answer {
     pub id: i32,
-    pub question_id: i32,
     pub text: String,
     pub is_correct: bool,
+    pub question_id: i32,
     pub is_active: bool,
 }
 
@@ -16,7 +16,7 @@ pub struct Answer {
 #[derive(Insertable)]
 #[table_name="answer"]
 pub struct NewAnswer<'a> {
-    pub question_id: i32,
     pub text: &'a str,
     pub is_correct: bool,
+    pub question_id: i32,
 }

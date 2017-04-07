@@ -11,6 +11,7 @@ use self::iron::modifiers::Redirect;
 use presentation::helper::session;
 use presentation::model::category::Category;
 use presentation::model::question::Question;
+use presentation::model::answer::Answer;
 use self::handlebars::to_json;
 use presentation::helper::util::{get_formdata, to_ironresult, redirect};
 
@@ -41,7 +42,7 @@ pub fn get_question(req: &mut Request) -> IronResult<Response> {
                     text: category.text,
                 },
                 categories: &categories,
-                answers: vec![],
+                answers: get_presentation_answers(x.id).unwrap(),
             }
         })
         .collect::<Vec<Question>>();
@@ -53,6 +54,21 @@ pub fn get_question(req: &mut Request) -> IronResult<Response> {
     Ok(Response::with((template, status::Ok)))
 }
 
+fn get_presentation_answers(question_id: i32) -> IronResult<Vec<Answer>> {
+    let data_answers = to_ironresult(get_answers(question_id))?;
+    let converted_answers = data_answers
+    .into_iter()
+    .map(|x| {
+        Answer{
+            id: x.id,
+            text: x.text,
+            is_confirmed_wrong: !x.is_correct,
+        }
+    })
+    .collect::<Vec<Answer>>();
+    Ok(converted_answers)
+}
+
 pub fn post_question_add(req: &mut Request) -> IronResult<Response> {
     if session::get_admin(req)?.is_none() {
         return redirect(req, "get_root");
@@ -61,8 +77,23 @@ pub fn post_question_add(req: &mut Request) -> IronResult<Response> {
     let category_as_int = to_ironresult(category.parse::<i32>())?;
     let question = get_formdata(req, "new_question")?;
     let new_question = create_question(category_as_int, &question);
-    to_ironresult(new_question)?;
+    let new_question_id = to_ironresult(new_question)?.id;
+    create_answer_from_form(req, 0, new_question_id)?;
+    create_answer_from_form(req, 1, new_question_id)?;
+    create_answer_from_form(req, 2, new_question_id)?;
+    create_answer_from_form(req, 3, new_question_id)?;
+
     Ok(Response::with((status::Found, Redirect(url_for!(req, "get_quiz_admin_question")))))
+}
+fn create_answer_from_form(req: &mut Request, nr: i32, question_id: i32) -> IronResult<()> {
+    let mut form_name = "new_answer".to_owned();
+    form_name.push_str(&nr.to_string());
+    let ans_text = &get_formdata(req, &form_name)?;
+    let correct_answer = get_formdata(req, "new_correct_answer")?;
+    let correct_nr = to_ironresult(correct_answer.parse::<i32>())?;
+    let ans = create_answer(question_id, &ans_text, correct_nr == nr);
+    to_ironresult(ans)?;
+    Ok(())
 }
 
 
