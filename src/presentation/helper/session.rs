@@ -10,8 +10,10 @@ use self::iss::SessionStorage;
 use self::iss::backends::SignedCookieBackend;
 use self::iss::errors::Error as SessionError;
 use self::iss::traits::*;
+
 use presentation::model::player::Player;
 use presentation::model::admin::Admin;
+use presentation::model::category::Category;
 
 
 pub fn link_to_chain(chain: &mut Chain) -> Result<&mut Chain, SessionError> {
@@ -31,8 +33,8 @@ pub fn get_player(req: &mut Request) -> IronResult<Option<Player>> {
 }
 
 
-pub fn create_player(req: &mut Request, id: i32) -> IronResult<()> {
-    req.session().set(Player::new(id))
+pub fn create_player(req: &mut Request, id: i32, categories: Vec<Category>) -> IronResult<()> {
+    req.session().set(Player::new(id, categories))
 }
 
 

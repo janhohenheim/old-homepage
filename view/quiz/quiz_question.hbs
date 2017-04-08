@@ -1,41 +1,32 @@
 {{#*inline "page"}}
-
     <div class="container">
-        <h1>Who is a cool dude?</h1>
+        <h1>{{question.text}}</h1>
         <form method="post">
-            <div class="row">
-                <div class="col-sm">
+        <div class="row">
+            {{#each question.answers}}
+                {{#if-mod @index 2}}
+                </div>
+                <div class="row">
+                {{/if-mod}}
+                <div class="col-sm-5">
                     <label class="radio-button-wrap">
-                        <input type="radio" name="answer" value="0">
-                        <span class="radio-button">Me</span>
+                        <input type="radio" name="answer" value="{{this.id}}">
+                        <span class="radio-button">{{this.text}}</span>
                     </label>
                 </div>
-                <div class="col-sm">
-                    <label class="radio-button-wrap">
-                        <input type="radio" name="answer" value="1">
-                        <span class="radio-button">You</span>
-                    </label>
-                </div>
+            {{/each}}
+        </div>
+        <div class="row">
+            <div class="col-sm-4">
+                <input class="btn btn-secondary" formaction="/quiz/play" type="submit" value="50/50 Joker">
             </div>
-            <div class="row">
-                <div class="col-sm">
-                    <label class="radio-button-wrap">
-                        <input type="radio" name="answer" value="2">
-                        <span class="radio-button">Mr. Baking Stove</span>
-                    </label>
-                </div>
-                <div class="col-sm">
-                    <label class="radio-button-wrap">
-                        <input type="radio" name="answer" value="3">
-                        <span class="radio-button">All of the above :)</span>
-                    </label>
-                </div>
+            <div class="col-sm-4">
+                <input class="btn btn-primary" formaction="/quiz/play" type="submit" value="Submit">
             </div>
-            <div class="row">
-                <div class="col-sm">
-                    <input class="btn btn-primary" type="submit" value="Submit">
-                </div>
+            <div class="col-sm-4">
+                <input class="btn btn-success" formaction="/quiz/play" type="submit" value="Stop playing and save score">
             </div>
+        </div>
         </form>
     </div>
 {{/inline}}

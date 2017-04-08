@@ -1,20 +1,55 @@
 {{#*inline "page"}}
-        <h1>Who Wants To Be A Millionaire?</h1>
-        {{#if error}}
-            <div class="alert alert-danger alert-dismissible" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-                        aria-hidden="true">&times;</span>
-                </button>
-                Please enter a valid username under 16 characters.
-            </div>
-        {{/if}}
-        <form method="post" class="form-inline">
+    <h1>Who Wants To Be A Millionaire?</h1>
+    <div class="container">
+
+
+        <form method="post" class="form-group">
             <label class="sr-only" for="inlineFormInput">username</label>
-            <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" name="name" pattern=".{1,15}" required title="15 characters maximum"  id="inlineFormInput" placeholder="Username">
-            <button type="submit" class="btn btn-primary">Start Quiz</button>
+            <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" name="name" pattern=".{1,15}" required
+                   title="15 characters maximum" id="inlineFormInput" placeholder="Username">
+
+            <br/>
+        <div class="row">
+            <div class="col col-sm-4">
+                <p class="lead">
+                    Categories
+                </p>
+            </div>
+            {{#if error}}
+            </div>
+                <div class="row">
+                    <div class="col col-sm">
+                        <div class="alert alert-danger alert-dismissible" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                    aria-hidden="true">&times;</span>
+                            </button>
+                            Please select at least one category.
+                        </div>
+                    </div>
+                </div>
+            <div class="row">
+            {{/if}}
+            {{#each categories}}
+                {{#if-mod @index 3}}
+                </div>
+                <div class="row">
+                {{/if-mod}}
+                <div class="col col-sm-4">
+                    <label class="radio-button-wrap">
+                        <input type="checkbox" name="categories" value="{{this.id}}">
+                        <span class="checkbox-button">{{this.text}}</span>
+                    </label>
+                </div>
+            {{/each}}
+        </div>
+            <br/>
+            <div class="form-inline">
+                <button type="submit" class="btn btn-primary">Start Quiz</button>
+                <a class="btn btn-secondary" href="/quiz/score" role="button">Scoreboard</a>
+            </div>
         </form>
+    </div>
 
 
-        <a class="btn btn-secondary" href="/quiz/score" role="button">Scoreboard</a>
 {{/inline}}
 {{~> (parent)~}}

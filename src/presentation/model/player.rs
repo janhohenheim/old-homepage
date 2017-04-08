@@ -4,18 +4,19 @@ extern crate serde;
 extern crate serde_json;
 
 use self::serde_json::{from_str, to_string};
+use super::category::Category;
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, Eq)]
 pub struct Player {
     pub id: i32,
-    pub selected_answer_index: Option<i32>,
+    pub categories: Vec<Category>,
 }
 
 impl Player {
-    pub fn new(id: i32) -> Self {
+    pub fn new(id: i32, categories: Vec<Category>) -> Self {
         Player {
             id,
-            selected_answer_index: None,
+            categories,
         }
     }
 }

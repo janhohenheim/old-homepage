@@ -10,6 +10,10 @@
     display: none;
 }
 
+.admin-button {
+    margin: 5px;
+}
+
 .radio-button {
     box-sizing: border-box;
     display: block;
@@ -19,10 +23,6 @@
     background: #ffb358;
     padding: 10px 15px;
     text-align: center;
-}
-
-.admin-button {
-    margin: 5px;
 }
 
 input:checked + .radio-button {
@@ -35,4 +35,27 @@ input:hover:checked + .radio-button {
 
 input:hover + .radio-button {
     background: #ff943e;
+}
+
+.checkbox-button {
+    box-sizing: border-box;
+    display: block;
+    border-radius: 13px;
+    border: double;
+    color: white;
+    background: #56deff;
+    padding: 10px 15px;
+    text-align: center;
+}
+
+input:checked + .checkbox-button {
+    background: #46aaff;
+}
+
+input:hover:checked + .checkbox-button {
+    background: #46aaff;
+}
+
+input:hover + .checkbox-button {
+    background: #46d1f3;
 }

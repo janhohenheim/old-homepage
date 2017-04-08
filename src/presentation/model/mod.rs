@@ -5,3 +5,4 @@ pub mod rank;
 pub mod category;
 pub mod question;
 pub mod answer;
+pub mod asked_question;

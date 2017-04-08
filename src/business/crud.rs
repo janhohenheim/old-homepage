@@ -52,6 +52,7 @@ pub fn get_category(cat_id: i32) -> Result<Category> {
     let conn = establish_connection();
     Ok(category
            .find(cat_id)
+           .filter(is_active.eq(true))
            .first(&conn)?)
 }
 
@@ -189,6 +190,7 @@ pub fn get_answers(q_id: i32) -> Result<Vec<Answer>> {
     let conn = establish_connection();
     answer
         .filter(question_id.eq(q_id))
+        .filter(is_active.eq(true))
         .order(id.asc())
         .load::<Answer>(&conn)
 }
