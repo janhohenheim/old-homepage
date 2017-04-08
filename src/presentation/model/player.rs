@@ -14,10 +14,7 @@ pub struct Player {
 
 impl Player {
     pub fn new(id: i32, categories: Vec<Category>) -> Self {
-        Player {
-            id,
-            categories,
-        }
+        Player { id, categories }
     }
 }
 

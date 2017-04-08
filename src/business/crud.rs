@@ -14,7 +14,8 @@ type Result<T> = self::diesel::QueryResult<T>;
 pub fn create_player(name: &str) -> Result<Player> {
     if name.is_empty() || name.len() > 15 {
         return Err(Error::DatabaseError(DatabaseErrorKind::__Unknown,
-                                        Box::new("Name cannot be empty or over 15 chars".to_owned())));
+                                        Box::new("Name cannot be empty or over 15 chars"
+                                                     .to_owned())));
     }
     use self::schema::player;
     let new_player = NewPlayer { name };
@@ -25,17 +26,16 @@ pub fn create_player(name: &str) -> Result<Player> {
 }
 
 pub fn create_category(cat_text: &str) -> Result<Category> {
-    if cat_text.is_empty() || cat_text.len() > 140{
+    if cat_text.is_empty() || cat_text.len() > 140 {
         return Err(Error::DatabaseError(DatabaseErrorKind::__Unknown,
                                         Box::new("Text cannot be empty or too long".to_owned())));
     }
     use self::schema::category;
     use self::schema::category::dsl::*;
     let conn = establish_connection();
-    let already_created_cats = category
-            .filter(text.eq(cat_text))
-            .filter(is_active.eq(true))
-            .load::<Category>(&conn)?;
+    let already_created_cats = category.filter(text.eq(cat_text))
+        .filter(is_active.eq(true))
+        .load::<Category>(&conn)?;
     if !already_created_cats.is_empty() {
         return Err(Error::DatabaseError(DatabaseErrorKind::__Unknown,
                                         Box::new("Text cannot be empty".to_owned())));
@@ -50,8 +50,7 @@ pub fn create_category(cat_text: &str) -> Result<Category> {
 pub fn get_category(cat_id: i32) -> Result<Category> {
     use self::schema::category::dsl::*;
     let conn = establish_connection();
-    Ok(category
-           .find(cat_id)
+    Ok(category.find(cat_id)
            .filter(is_active.eq(true))
            .first(&conn)?)
 }
@@ -66,7 +65,7 @@ pub fn get_categories() -> Result<Vec<Category>> {
 }
 
 pub fn rename_category(cat_id: i32, cat_text: &str) -> Result<Category> {
-    if cat_text.is_empty() || cat_text.len() > 140{
+    if cat_text.is_empty() || cat_text.len() > 140 {
         return Err(Error::DatabaseError(DatabaseErrorKind::__Unknown,
                                         Box::new("Text cannot be empty or too long".to_owned())));
     }
@@ -87,7 +86,7 @@ pub fn deactivate_category(cat_id: i32) -> Result<Category> {
 
 
 pub fn create_question(q_category_id: i32, q_text: &str) -> Result<Question> {
-    if q_text.is_empty() || q_text.len() > 140{
+    if q_text.is_empty() || q_text.len() > 140 {
         return Err(Error::DatabaseError(DatabaseErrorKind::__Unknown,
                                         Box::new("Text cannot be empty or too long".to_owned())));
     }
@@ -95,8 +94,7 @@ pub fn create_question(q_category_id: i32, q_text: &str) -> Result<Question> {
     use self::schema::question::dsl::*;
     let conn = establish_connection();
 
-    let already_created_qs = question
-        .filter(text.eq(q_text))
+    let already_created_qs = question.filter(text.eq(q_text))
         .filter(is_active.eq(true))
         .load::<Question>(&conn)?;
     if !already_created_qs.is_empty() {
@@ -135,7 +133,7 @@ pub fn change_question_category(q_id: i32, cat_id: i32) -> Result<Question> {
 }
 
 pub fn rename_question(q_id: i32, q_text: &str) -> Result<Question> {
-    if q_text.is_empty() || q_text.len() > 140{
+    if q_text.is_empty() || q_text.len() > 140 {
         return Err(Error::DatabaseError(DatabaseErrorKind::__Unknown,
                                         Box::new("Text cannot be empty or too long".to_owned())));
     }
@@ -156,7 +154,7 @@ pub fn deactivate_question(q_id: i32) -> Result<Question> {
 
 pub fn create_answer(a_question_id: i32, a_text: &str, a_is_correct: bool) -> Result<Answer> {
     let conn = establish_connection();
-    if a_text.is_empty() || a_text.len() > 140{
+    if a_text.is_empty() || a_text.len() > 140 {
         return Err(Error::DatabaseError(DatabaseErrorKind::__Unknown,
                                         Box::new("Text cannot be empty or too long".to_owned())));
     }
@@ -166,8 +164,7 @@ pub fn create_answer(a_question_id: i32, a_text: &str, a_is_correct: bool) -> Re
     }
     use self::schema::answer;
     use self::schema::answer::dsl::*;
-    let already_created_as = answer
-        .filter(text.eq(a_text))
+    let already_created_as = answer.filter(text.eq(a_text))
         .filter(question_id.eq(a_question_id))
         .filter(is_active.eq(true))
         .load::<Answer>(&conn)?;
@@ -196,7 +193,7 @@ pub fn get_answers(q_id: i32) -> Result<Vec<Answer>> {
 }
 
 pub fn rename_answer(a_id: i32, a_text: &str) -> Result<Answer> {
-    if a_text.is_empty() || a_text.len() > 140{
+    if a_text.is_empty() || a_text.len() > 140 {
         return Err(Error::DatabaseError(DatabaseErrorKind::__Unknown,
                                         Box::new("Text cannot be empty or too long".to_owned())));
     }
@@ -218,7 +215,6 @@ pub fn change_answer_correct(a_id: i32, state: bool) -> Result<Answer> {
 pub fn remove_round(score_id: i32) -> Result<bool> {
     use self::schema::round::dsl::*;
     let conn = establish_connection();
-    let num_deleted = diesel::delete(round.find(score_id))
-        .execute(&conn)?;
+    let num_deleted = diesel::delete(round.find(score_id)).execute(&conn)?;
     Ok(num_deleted != 0)
 }

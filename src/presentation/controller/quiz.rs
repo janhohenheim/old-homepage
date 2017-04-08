@@ -52,17 +52,18 @@ fn generate_quiz(req: &mut Request) -> IronResult<Response> {
     generate_quiz_start_with_data(req, BTreeMap::new())
 }
 
-fn generate_quiz_start_with_data(req: &mut Request, mut data: BTreeMap<String, Value>)
-    -> IronResult<Response> {
+fn generate_quiz_start_with_data(req: &mut Request,
+                                 mut data: BTreeMap<String, Value>)
+                                 -> IronResult<Response> {
     let categories = get_categories()
         .unwrap()
         .into_iter()
         .map(|x| {
-            Category {
-                id: x.id,
-                text: x.text,
-            }
-        })
+                 Category {
+                     id: x.id,
+                     text: x.text,
+                 }
+             })
         .collect::<Vec<Category>>();
     let mut json = btreemap! {
         "categories".to_string() => to_json(&categories),

@@ -21,8 +21,10 @@ use presentation::helper::session::get_admin;
 pub fn link_to_chain(chain: &mut Chain) -> Result<&mut Chain, SourceError> {
     let mut hbse = HandlebarsEngine::new();
     hbse.add(Box::new(DirectorySource::new("./view/", ".hbs")));
-    hbse.handlebars_mut().register_helper("if-eq", Box::new(if_eq));
-    hbse.handlebars_mut().register_helper("if-mod", Box::new(if_mod));
+    hbse.handlebars_mut()
+        .register_helper("if-eq", Box::new(if_eq));
+    hbse.handlebars_mut()
+        .register_helper("if-mod", Box::new(if_mod));
     hbse.reload()?;
     Ok(chain.link_after(hbse))
 }
@@ -98,25 +100,36 @@ fn set_active_section(sections: &mut Vec<SectionData>, active: &Section) {
 
 
 
-fn if_eq (h: &Helper, hbs: &Handlebars, rc: &mut RenderContext) -> Result<(), RenderError> {
+fn if_eq(h: &Helper, hbs: &Handlebars, rc: &mut RenderContext) -> Result<(), RenderError> {
     if_numeric_interaction(h, hbs, rc, |x, y| x == y)
 }
 
-fn if_mod (h: &Helper, hbs: &Handlebars, rc: &mut RenderContext) -> Result<(), RenderError> {
+fn if_mod(h: &Helper, hbs: &Handlebars, rc: &mut RenderContext) -> Result<(), RenderError> {
     if_numeric_interaction(h, hbs, rc, |x, y| (x % y) == 0)
 }
 
 
-fn if_numeric_interaction<F> (h: &Helper, hbs: &Handlebars, rc: &mut RenderContext, f: F) -> Result<(), RenderError>
-    where F: Fn(i64, i64) -> bool {
+fn if_numeric_interaction<F>(h: &Helper,
+                             hbs: &Handlebars,
+                             rc: &mut RenderContext,
+                             f: F)
+                             -> Result<(), RenderError>
+    where F: Fn(i64, i64) -> bool
+{
     let param0 =
-        h.param(0).ok_or_else(|| RenderError::new("First param not found for helper \"if_mod\""))?;
+        h.param(0)
+            .ok_or_else(|| RenderError::new("First param not found for helper \"if_mod\""))?;
     let param1 =
-        h.param(1).ok_or_else(|| RenderError::new("Second param not found for helper \"if_mod\""))?;
+        h.param(1)
+            .ok_or_else(|| RenderError::new("Second param not found for helper \"if_mod\""))?;
 
     let err_msg = "First param needs to be a number for helper \"if_mod\"";
-    let nr0 = param0.value().as_i64().ok_or_else(|| RenderError::new(err_msg))?;
-    let nr1 = param1.value().as_i64().ok_or_else(|| RenderError::new(err_msg))?;;
+    let nr0 = param0.value()
+        .as_i64()
+        .ok_or_else(|| RenderError::new(err_msg))?;
+    let nr1 = param1.value()
+        .as_i64()
+        .ok_or_else(|| RenderError::new(err_msg))?;
     let value = f(nr0, nr1);
     let tmpl = if value { h.template() } else { h.inverse() };
     match tmpl {
