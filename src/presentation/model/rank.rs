@@ -1,7 +1,6 @@
 #[derive(Serialize, Debug, PartialEq, Eq)]
 pub struct Rank {
     pub round_id: i32,
-    pub ranking: i32,
     pub name: String,
     pub score: i32,
     pub points: i32,

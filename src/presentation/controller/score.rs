@@ -10,21 +10,40 @@ use presentation::model::rank::Rank;
 use presentation::helper::session;
 use presentation::helper::util::{get_formdata, to_ironresult, redirect};
 use business::crud::remove_round;
+use business::round_data::*;
 
 pub fn get_score(req: &mut Request) -> IronResult<Response> {
-    let dummy = Rank {
-        round_id: 0,
-        ranking: 1,
-        name: "Foo".to_owned(),
-        score: 20,
-        points: 40,
-        game_start: "14:00".to_owned(),
-        game_length: 2,
-        categories: "Memes, Bourgeoisie".to_owned(),
-    };
-
-    let ranks = vec![dummy];
-
+    let round_data = to_ironresult(get_all_round_data())?;
+    let mut ranks = round_data
+        .into_iter()
+        .filter(|x| !x.is_last_answer_wrong)
+        .map(|x| {
+            let points = x.answer_count as i32 * 30;
+            let categories: String = x.categories
+                .into_iter()
+                .map(move |y| y.text)
+                .fold("".to_owned(), |mut acc, x| {
+                    acc.push_str(&x);
+                    acc
+                });
+            println!("start: {}, end: {}", x.start_time.format("%Y-%m-%d %H:%M:%S").to_string(), x.end_time.format("%Y-%m-%d %H:%M:%S").to_string());
+            let game_length = x
+                .end_time
+                .signed_duration_since(x.start_time)
+                .num_seconds() as i32;
+            let game_start = x.start_time.format("%Y-%m-%d %H:%M:%S").to_string();
+            Rank {
+                round_id: x.id,
+                name: x.player.name,
+                score: points / game_length,
+                points: points,
+                game_start: game_start,
+                game_length: game_length,
+                categories: categories,
+            }
+        })
+        .collect::<Vec<Rank>>();
+    ranks.sort_by_key(|x| x.score);
     let data = btreemap! {
         "ranks".to_string() => to_json(&ranks),
     };

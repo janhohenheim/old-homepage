@@ -1,7 +1,7 @@
 extern crate diesel;
 extern crate chrono;
 
-use self::chrono::UTC;
+use self::chrono::offset::utc::UTC;
 use self::diesel::prelude::*;
 use data::model::quiz::category::*;
 use data::model::quiz::player::*;
@@ -28,6 +28,12 @@ pub fn create_player(name: &str) -> Result<Player> {
     diesel::insert(&new_player)
         .into(player::table)
         .get_result(&conn)
+}
+
+pub fn get_player(player_id: i32) -> Result<Player> {
+    use self::schema::player::dsl::*;
+    let conn = establish_connection();
+    Ok(player.find(player_id).first(&conn)?)
 }
 
 pub fn create_category(cat_text: &str) -> Result<Category> {
@@ -248,6 +254,13 @@ pub fn get_round(round_id: i32) -> Result<Round> {
     use self::schema::round::dsl::*;
     let conn = establish_connection();
     round.find(round_id).first::<Round>(&conn)
+}
+
+
+pub fn get_rounds() -> Result<Vec<Round>> {
+    use self::schema::round::dsl::*;
+    let conn = establish_connection();
+    round.order(id.desc()).load::<Round>(&conn)
 }
 
 pub fn set_round_finished(round_id: i32) -> Result<Round> {
