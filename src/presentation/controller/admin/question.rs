@@ -19,7 +19,8 @@ pub fn get_question(req: &mut Request) -> IronResult<Response> {
     if session::get_admin(req)?.is_none() {
         return redirect(req, "get_root");
     }
-    let categories = to_ironresult(get_categories())?
+    let categories = to_ironresult(get_categories())
+        ?
         .into_iter()
         .map(|x| {
                  Category {
@@ -28,7 +29,8 @@ pub fn get_question(req: &mut Request) -> IronResult<Response> {
                  }
              })
         .collect::<Vec<Category>>();
-    let questions = to_ironresult(get_questions())?
+    let questions = to_ironresult(get_questions())
+        ?
         .into_iter()
         .map(|x| {
             let category = get_category(x.category_id).unwrap();
