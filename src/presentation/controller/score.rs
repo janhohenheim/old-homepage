@@ -13,22 +13,22 @@ use business::crud::remove_round;
 use business::round_data::*;
 
 pub fn get_score(req: &mut Request) -> IronResult<Response> {
+
     let round_data = to_ironresult(get_all_round_data())?;
     let mut ranks = round_data
         .into_iter()
-        .filter(|x| !x.is_last_answer_wrong)
         .map(|x| {
             let points = x.answer_count as i32 * 30;
-            let categories: String = x.categories
+            let mut categories: String = x.categories
                 .into_iter()
                 .map(move |y| y.text)
                 .fold("".to_owned(), |mut acc, x| {
                     acc.push_str(&x);
+                    acc.push_str(", ");
                     acc
                 });
-            println!("start: {}, end: {}",
-                     x.start_time.format("%Y-%m-%d %H:%M:%S").to_string(),
-                     x.end_time.format("%Y-%m-%d %H:%M:%S").to_string());
+            categories.pop();
+            categories.pop();
             let game_length = x.end_time
                 .signed_duration_since(x.start_time)
                 .num_seconds() as i32;
@@ -43,8 +43,9 @@ pub fn get_score(req: &mut Request) -> IronResult<Response> {
                 categories: categories,
             }
         })
+        .filter(|x| x.score != 0)
         .collect::<Vec<Rank>>();
-    ranks.sort_by_key(|x| x.score);
+    ranks.sort_by(|a, b| b.score.cmp(&a.score));
     let data = btreemap! {
         "ranks".to_string() => to_json(&ranks),
     };

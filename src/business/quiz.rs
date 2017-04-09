@@ -27,7 +27,19 @@ pub fn is_game_in_progress(player_id: i32) -> Result<bool> {
 pub fn get_question_and_answers(player_id: i32) -> Result<(Question, Vec<Answer>)> {
     let curr_question = get_current_question(player_id)?
         .ok_or_else(|| QuizError::GameAlreadyFinished)?;
-    let answers = get_answers(curr_question.id)?;
+    let mut answers = get_answers(curr_question.id)?;
+
+    if let Some(round_question) = get_current_round_question(player_id)? {
+        if round_question.is_joker_used {
+            answers.sort_by(|a, b| b.is_correct.cmp(&a.is_correct));
+            let half_len = answers.len() / 2;
+            while answers.len() > half_len {
+                answers.pop();
+            }
+        }
+    }
+    let mut rng = thread_rng();
+    rng.shuffle(&mut answers);
     Ok((curr_question, answers))
 }
 

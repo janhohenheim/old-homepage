@@ -29,25 +29,19 @@ pub fn get_round_data(round_id: i32) -> Result<RoundData> {
         return Err(QuizError::StateError);
     }
     let categories = get_round_categories_joined(round_id)?;
-
-    let first_round_question = &round_questions[0];
-    let last_round_question = &round_questions[round_questions.len() - 1];
-
+    let first_round_question = &round_questions[round_questions.len() - 1];
+    let last_round_question = &round_questions[0];
     let end_time = last_round_question.end_time
         .ok_or_else(|| QuizError::StateError)?;
-
     let is_last_answer_wrong = match last_round_question.answer_id {
         Some(answer_id) => !get_answer(answer_id)?.is_correct,
         None => false,
     };
-
     let answer_count = round_questions
         .iter()
         .filter(|x| x.answer_id.is_some())
         .count();
-
     let player = get_player(round.player_id)?;
-
     Ok(RoundData {
            id: round.id,
            player: player,
@@ -63,7 +57,9 @@ pub fn get_all_round_data() -> Result<Vec<RoundData>> {
     let rounds = get_rounds()?;
     let mut round_data = Vec::new();
     for round in rounds {
-        round_data.push(get_round_data(round.id)?);
+        if round.is_finished {
+            round_data.push(get_round_data(round.id)?);
+        }
     }
     Ok(round_data)
 }
