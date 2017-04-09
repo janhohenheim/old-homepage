@@ -26,9 +26,10 @@ pub fn get_score(req: &mut Request) -> IronResult<Response> {
                     acc.push_str(&x);
                     acc
                 });
-            println!("start: {}, end: {}", x.start_time.format("%Y-%m-%d %H:%M:%S").to_string(), x.end_time.format("%Y-%m-%d %H:%M:%S").to_string());
-            let game_length = x
-                .end_time
+            println!("start: {}, end: {}",
+                     x.start_time.format("%Y-%m-%d %H:%M:%S").to_string(),
+                     x.end_time.format("%Y-%m-%d %H:%M:%S").to_string());
+            let game_length = x.end_time
                 .signed_duration_since(x.start_time)
                 .num_seconds() as i32;
             let game_start = x.start_time.format("%Y-%m-%d %H:%M:%S").to_string();
