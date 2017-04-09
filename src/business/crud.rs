@@ -1,5 +1,7 @@
 extern crate diesel;
+extern crate chrono;
 
+use self::chrono::UTC;
 use self::diesel::prelude::*;
 use data::model::quiz::category::*;
 use data::model::quiz::player::*;
@@ -327,4 +329,22 @@ pub fn set_joker_user(round_question_id: i32) -> Result<RoundQuestion> {
     diesel::update(round_question.find(round_question_id))
         .set(is_joker_used.eq(true))
         .get_result::<RoundQuestion>(&conn)
+}
+
+pub fn set_end_time_to_now(round_question_id: i32) -> Result<RoundQuestion> {
+    use self::schema::round_question::dsl::*;
+    let conn = establish_connection();
+    diesel::update(round_question.find(round_question_id))
+        .set(end_time.eq(UTC::now().naive_utc()))
+        .get_result::<RoundQuestion>(&conn)
+
+}
+
+pub fn set_answer(round_question_id: i32, a_id: i32) -> Result<RoundQuestion> {
+    use self::schema::round_question::dsl::*;
+    let conn = establish_connection();
+    diesel::update(round_question.find(round_question_id))
+        .set(answer_id.eq(a_id))
+        .get_result::<RoundQuestion>(&conn)
+
 }
