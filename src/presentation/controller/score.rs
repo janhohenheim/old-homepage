@@ -17,6 +17,7 @@ pub fn get_score(req: &mut Request) -> IronResult<Response> {
     let round_data = to_ironresult(get_all_round_data())?;
     let mut ranks = round_data
         .into_iter()
+        .filter(|x| !x.is_last_answer_wrong)
         .map(|x| {
             let points = x.answer_count as i32 * 30;
             let mut categories: String = x.categories
