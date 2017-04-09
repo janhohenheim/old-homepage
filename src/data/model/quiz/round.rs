@@ -9,6 +9,7 @@ use super::player::Player;
 pub struct Round {
     pub id: i32,
     pub player_id: i32,
+    pub is_finished: bool,
 }
 
 #[derive(Insertable)]

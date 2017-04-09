@@ -244,10 +244,24 @@ pub fn create_round(p_id: i32) -> Result<Round> {
         .get_result(&conn)
 }
 
-pub fn remove_round(score_id: i32) -> Result<bool> {
+pub fn get_round(round_id: i32) -> Result<Round> {
     use self::schema::round::dsl::*;
     let conn = establish_connection();
-    let num_deleted = diesel::delete(round.find(score_id)).execute(&conn)?;
+    round.find(round_id).first::<Round>(&conn)
+}
+
+pub fn set_round_finished(round_id: i32) -> Result<Round> {
+    use self::schema::round::dsl::*;
+    let conn = establish_connection();
+    diesel::update(round.find(round_id))
+        .set(is_finished.eq(true))
+        .get_result::<Round>(&conn)
+}
+
+pub fn remove_round(round_id: i32) -> Result<bool> {
+    use self::schema::round::dsl::*;
+    let conn = establish_connection();
+    let num_deleted = diesel::delete(round.find(round_id)).execute(&conn)?;
     Ok(num_deleted != 0)
 }
 
@@ -259,10 +273,10 @@ pub fn create_round_category(r_id: i32, cat_id: i32) -> Result<RoundCategory> {
         round_id: r_id,
         category_id: cat_id,
     };
-
-    diesel::insert(&new_round_category)
+    let a = diesel::insert(&new_round_category)
         .into(round_category::table)
-        .get_result(&conn)
+        .get_result(&conn);
+    a
 }
 
 pub fn get_round_categories(r_id: i32) -> Result<Vec<RoundCategory>> {

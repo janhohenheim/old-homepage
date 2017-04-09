@@ -1,0 +1,2 @@
+ALTER TABLE round_category DROP CONSTRAINT round_category_category_id_fkey;
+ALTER TABLE round_category ADD CONSTRAINT round_category_category_id_fkey FOREIGN KEY (category_id) REFERENCES category(id) on update cascade;

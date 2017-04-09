@@ -1,0 +1,1 @@
+ALTER TABLE round_question ALTER COLUMN end_time SET DEFAULT now();

@@ -6,7 +6,7 @@
         <form method="post" class="form-group">
             <label class="sr-only" for="inlineFormInput">username</label>
             <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" name="name" pattern=".{1,15}" required
-                   title="15 characters maximum" id="inlineFormInput" placeholder="Username">
+                   title="15 characters maximum" id="inlineFormInput" value="{{name}}" placeholder="Username">
 
             <br/>
         <div class="row">
@@ -36,7 +36,8 @@
                 {{/if-mod}}
                 <div class="col col-sm-4">
                     <label class="radio-button-wrap">
-                        <input type="checkbox" name="categories" value="{{this.id}}">
+                        <!--Workaround because of limitations in iron-urlencoded-->
+                        <input type="checkbox" name="playing_categories{{@index}}" value="{{this.id}}">
                         <span class="checkbox-button">{{this.text}}</span>
                     </label>
                 </div>
@@ -45,9 +46,9 @@
             <br/>
             <div class="form-inline">
                 <button type="submit" class="btn btn-primary">Start Quiz</button>
-                <a class="btn btn-secondary" href="/quiz/score" role="button">Scoreboard</a>
             </div>
         </form>
+        <a class="btn btn-secondary" href="/quiz/score" role="button">Scoreboard</a>
     </div>
 
 

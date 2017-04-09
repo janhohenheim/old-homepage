@@ -12,8 +12,9 @@ use presentation::model::section::Section;
 use presentation::model::asked_question::AskedQuestion;
 use presentation::model::answer::Answer;
 use presentation::helper::session;
-use presentation::helper::util::{redirect, to_ironresult};
+use presentation::helper::util::{redirect, to_ironresult, get_formdata};
 use business::quiz::*;
+use business::quiz_error::QuizError;
 
 pub fn get_play(req: &mut Request) -> IronResult<Response> {
     let pl = session::get_player(req)?;
@@ -22,18 +23,12 @@ pub fn get_play(req: &mut Request) -> IronResult<Response> {
     }
     let player = pl.unwrap();
 
-    let (question, answers) = match to_ironresult(is_game_in_progress(player.id))? {
-        true => to_ironresult(get_question_and_answers(player.id))?,
-        false => {
-            to_ironresult(start_game(player.id,
-                                     player
-                                         .categories
-                                         .iter()
-                                         .map(|x| x.id)
-                                         .collect::<Vec<i32>>()))?
-        }
-    };
+    if !to_ironresult(is_game_in_progress(player.id))? {
+        session::clear(req)?;
+        return redirect(req, "get_quiz_score");
+    }
 
+    let (question, answers) = to_ironresult(get_question_and_answers(player.id))?;
     let presentation_answers = answers
         .into_iter()
         .map(|x| {
@@ -44,24 +39,70 @@ pub fn get_play(req: &mut Request) -> IronResult<Response> {
                  }
              })
         .collect::<Vec<Answer>>();
-
     let asked_question = AskedQuestion {
         text: question.text,
         answers: presentation_answers,
     };
 
-
     let data = btreemap!{
         "question".to_string() => to_json(&asked_question),
     };
-
     let template = generate_site(req, "quiz/quiz_question", data, Some(&Section::Quiz));
     Ok(Response::with((template, status::Ok)))
 }
 
 pub fn post_play(req: &mut Request) -> IronResult<Response> {
-    if session::get_player(req)?.is_none() {
+    let pl = session::get_player(req)?;
+    if pl.is_none() {
         return redirect(req, "get_quiz_start");
     }
+    let player = pl.unwrap();
+    if !to_ironresult(is_game_in_progress(player.id))? {
+        return redirect(req, "get_quiz_start");
+    }
+    let ans = get_formdata(req, "answer")?;
+    if ans.is_empty() {
+        return redirect(req, "get_quiz_play");
+    }
+    let answer_id = to_ironresult(ans.parse::<i32>())?;
+    let was_correct = answer(player.id, answer_id);
+    if let &Err(ref err) = &was_correct {
+        if let &QuizError::OutOfResources = err {
+            return redirect(req, "get_quiz_score");
+        }
+    }
+    match to_ironresult(was_correct)? {
+        AnswerResult::Correct => redirect(req, "get_quiz_play"),
+        AnswerResult::Wrong(_) => redirect(req, "get_quiz_score"),
+    }
+}
+
+pub fn post_joker(req: &mut Request) -> IronResult<Response> {
+    let player = session::get_player(req)?;
+    if player.is_none() {
+        return redirect(req, "get_quiz_start");
+    }
+    let player_id = player.unwrap().id;
+    if !to_ironresult(is_game_in_progress(player_id))? {
+        return redirect(req, "get_quiz_start");
+    }
+
+    if to_ironresult(can_use_fifty_fifty_joker(player_id))? {
+        to_ironresult(use_fifty_fifty_joker(player_id))?;
+    }
     redirect(req, "get_quiz_play")
+}
+
+pub fn post_finish(req: &mut Request) -> IronResult<Response> {
+    let player = session::get_player(req)?;
+    if player.is_none() {
+        return redirect(req, "get_quiz_start");
+    }
+    let player_id = player.unwrap().id;
+    if !to_ironresult(is_game_in_progress(player_id))? {
+        return redirect(req, "get_quiz_start");
+    }
+    to_ironresult(finish_game(player_id))?;
+    session::clear(req)?;
+    redirect(req, "get_quiz_score")
 }

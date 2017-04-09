@@ -3,7 +3,6 @@ extern crate router;
 extern crate handlebars;
 
 use self::iron::{Request, IronResult, Response, status};
-use self::iron::modifiers::Redirect;
 use self::handlebars::to_json;
 use presentation::helper::templating::*;
 use presentation::model::section::Section;
@@ -14,6 +13,7 @@ use business::crud::remove_round;
 
 pub fn get_score(req: &mut Request) -> IronResult<Response> {
     let dummy = Rank {
+        round_id: 0,
         ranking: 1,
         name: "Foo".to_owned(),
         score: 20,
@@ -38,9 +38,8 @@ pub fn post_score_remove(req: &mut Request) -> IronResult<Response> {
     if session::get_admin(req)?.is_none() {
         return redirect(req, "get_root");
     }
-
-    let id = get_formdata(req, "id")?;
+    let id = get_formdata(req, "round_id")?;
     let id_as_int = to_ironresult(id.parse::<i32>())?;
     to_ironresult(remove_round(id_as_int))?;
-    Ok(Response::with((status::Found, Redirect(url_for!(req, "get_quiz_score")))))
+    redirect(req, "get_quiz_score")
 }

@@ -11,6 +11,7 @@ pub enum QuizError {
     DatabaseError(DatabaseError),
     JokerUnavailable,
     GameAlreadyFinished,
+    NoGameInProgress,
     GameStillInProgress,
     StateError,
     OutOfResources,
@@ -24,6 +25,10 @@ impl fmt::Display for QuizError {
             QuizError::GameAlreadyFinished => {
                 write!(f,
                        "Game already finished error: Tried to interact with a game that has already been finished")
+            }
+            QuizError::NoGameInProgress => {
+                write!(f,
+                       "No game in progress error: Tried to play without starting a game first")
             }
             QuizError::GameStillInProgress => {
                 write!(f,
@@ -47,6 +52,7 @@ impl error::Error for QuizError {
             QuizError::JokerUnavailable => "Joker unavailable error",
             QuizError::GameAlreadyFinished => "Game already finished error",
             QuizError::GameStillInProgress => "Game still in progress error",
+            QuizError::NoGameInProgress => "No game in progress error",
             QuizError::StateError => "State error",
             QuizError::OutOfResources => "Out of resources error",
         }

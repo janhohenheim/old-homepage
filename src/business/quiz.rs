@@ -17,7 +17,11 @@ type Result<T> = result::Result<T, QuizError>;
 
 
 pub fn is_game_in_progress(player_id: i32) -> Result<bool> {
-    Ok(get_current_round(player_id)?.is_some())
+    let round = get_last_round(player_id)?;
+    if let Some(rnd) = round {
+        return Ok(!rnd.is_finished);
+    }
+    Ok(false)
 }
 
 pub fn get_question_and_answers(player_id: i32) -> Result<(Question, Vec<Answer>)> {
@@ -27,7 +31,7 @@ pub fn get_question_and_answers(player_id: i32) -> Result<(Question, Vec<Answer>
     Ok((curr_question, answers))
 }
 
-pub fn answer(player_id: i32, answer_id: i32) -> Result<bool> {
+pub fn answer(player_id: i32, answer_id: i32) -> Result<AnswerResult> {
     is_answer_valid(player_id, answer_id)?;
     let round_question = get_current_round_question(player_id)?
         .ok_or_else(|| QuizError::GameAlreadyFinished)?;
@@ -35,17 +39,36 @@ pub fn answer(player_id: i32, answer_id: i32) -> Result<bool> {
     set_answer(round_question.id, answer_id)?;
     let answer = get_answer(answer_id)?;
     if !answer.is_correct {
-        return Ok(false);
-    }
-    if generate_new_round_question(player_id)?.is_none() {
+        let (_, answers) = get_question_and_answers(player_id)?;
         finish_game(player_id)?;
-        return Err(QuizError::OutOfResources);
+        for ans in answers {
+            if ans.is_correct {
+                return Ok(AnswerResult::Wrong(ans));
+            }
+        }
+        return Err(QuizError::StateError);
     }
-    Ok(true)
+
+    let result = generate_new_round_question(player_id);
+    if let Err(err) = result {
+        if let QuizError::OutOfResources = err {
+            finish_game(player_id)?;
+        } else {
+            return Err(err);
+        }
+    }
+
+    Ok(AnswerResult::Correct)
 }
 
+pub enum AnswerResult {
+    Correct,
+    Wrong(Answer),
+}
+
+
 pub fn start_game(player_id: i32, category_ids: Vec<i32>) -> Result<(Question, Vec<Answer>)> {
-    if !is_round_finished(player_id)? {
+    if is_game_in_progress(player_id)? {
         return Err(QuizError::GameStillInProgress);
     }
     let round = create_round(player_id)?;
@@ -57,17 +80,21 @@ pub fn start_game(player_id: i32, category_ids: Vec<i32>) -> Result<(Question, V
 }
 
 pub fn finish_game(player_id: i32) -> Result<Round> {
+    if !is_game_in_progress(player_id)? {
+        return Err(QuizError::NoGameInProgress);
+    }
+
     let round_question = get_current_round_question(player_id)?
-        .ok_or_else(|| QuizError::GameAlreadyFinished)?;
-    let curr_round = get_current_round(player_id)?
-        .ok_or_else(|| QuizError::GameAlreadyFinished)?;
+        .ok_or_else(|| QuizError::StateError)?;
     set_end_time_to_now(round_question.id)?;
-    Ok(curr_round)
+    let round = get_last_round(player_id)?.unwrap();
+    set_round_finished(round.id)?;
+    Ok(round)
 }
 
 pub fn can_use_fifty_fifty_joker(player_id: i32) -> Result<bool> {
-    let curr_round = get_current_round(player_id)?
-        .ok_or_else(|| QuizError::GameAlreadyFinished)?;
+    let curr_round = get_last_round(player_id)?
+        .ok_or_else(|| QuizError::NoGameInProgress)?;
     let round_questions = get_round_questions(curr_round.id)?;
     for round_question in round_questions {
         if round_question.is_joker_used {
@@ -113,64 +140,65 @@ fn is_answer_valid(player_id: i32, answer_id: i32) -> Result<bool> {
     Ok(answers.iter().any(|x| x.id == answer_id && x.is_active))
 }
 
-fn generate_new_round_question(player_id: i32) -> Result<Option<RoundQuestion>> {
-    if is_round_finished(player_id)? {
-        return Err(QuizError::GameAlreadyFinished);
+fn generate_new_round_question(player_id: i32) -> Result<RoundQuestion> {
+    let round = get_last_round(player_id)?
+        .ok_or_else(|| QuizError::NoGameInProgress)?;
+
+    if is_round_finished(round.id)? {
+        return Err(QuizError::NoGameInProgress);
     }
-    let mut categories = get_round_categories_joined(player_id)?;
+    let mut categories = get_round_categories_joined(round.id)?;
     let mut rng = thread_rng();
     rng.shuffle(&mut categories);
     for category in categories {
         let mut questions = get_questions_with_category(category.id)?;
         rng.shuffle(&mut questions);
-
-        let curr_round = get_current_round(player_id)?
-            .ok_or_else(|| QuizError::GameAlreadyFinished)?;
-        let round_questions = get_round_questions(curr_round.id)?;
+        let round_questions = get_round_questions(round.id)?;
         for question in questions {
-            if !round_questions.iter().any(|x| x.id == question.id) {
-                let new_round_question = create_round_question(curr_round.id, question.id)?;
-                return Ok(Some(new_round_question));
+            if !round_questions
+                    .iter()
+                    .any(|x| x.question_id == question.id) {
+                let new_round_question = create_round_question(round.id, question.id)?;
+                return Ok(new_round_question);
             }
         }
     }
-    Ok(None)
+    Err(QuizError::OutOfResources)
 }
 
 fn get_current_question(player_id: i32) -> Result<Option<Question>> {
-    let curr_round = get_current_round(player_id)?
-        .ok_or_else(|| QuizError::GameAlreadyFinished)?;
-    let newest_question = get_round_questions_joined(curr_round.id)?.remove(0);
-    match is_round_finished(newest_question.id)? {
-        true => Ok(None),
-        false => Ok(Some(newest_question)),
+    if !is_game_in_progress(player_id)? {
+        return Err(QuizError::NoGameInProgress);
     }
+    let round = get_last_round(player_id)?.unwrap();
+    let mut questions = get_round_questions_joined(round.id)?;
+    if questions.is_empty() {
+        return Ok(None);
+    }
+    Ok(Some(questions.remove(0)))
 }
 
-fn get_current_round(player_id: i32) -> Result<Option<Round>> {
-    let newest_round = get_player_rounds(player_id)?.remove(0);
-    match is_round_finished(newest_round.id)? {
-        true => Ok(None),
-        false => Ok(Some(newest_round)),
+fn get_last_round(player_id: i32) -> Result<Option<Round>> {
+    let mut rounds = get_player_rounds(player_id)?;
+    if rounds.is_empty() {
+        return Ok(None);
     }
+    Ok(Some(rounds.remove(0)))
 }
 
 fn get_current_round_question(player_id: i32) -> Result<Option<RoundQuestion>> {
-    let newest_round_question = get_round_questions(player_id)?.remove(0);
-    match is_round_finished(newest_round_question.round_id)? {
-        true => Ok(None),
-        false => Ok(Some(newest_round_question)),
+    if !is_game_in_progress(player_id)? {
+        return Err(QuizError::NoGameInProgress);
     }
+    let round = get_last_round(player_id)?.unwrap();
+    let mut round_questions = get_round_questions(round.id)?;
+    if round_questions.is_empty() {
+        return Ok(None);
+    }
+    Ok(Some(round_questions.remove(0)))
 }
 
 fn is_round_finished(round_id: i32) -> Result<bool> {
-    let curr_round_question = get_round_questions(round_id)?.remove(0);
-    if curr_round_question.end_time.is_some() {
-        if let Some(answer_id) = curr_round_question.answer_id {
-            let answer = get_answer(answer_id)?;
-            return Ok(!answer.is_correct);
-        }
-        return Ok(true);
-    }
-    Ok(false)
+    let round = get_round(round_id)?;
+    Ok(round.is_finished)
 }

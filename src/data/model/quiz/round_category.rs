@@ -3,7 +3,7 @@ use super::category::Category;
 use super::round::Round;
 
 
-#[derive(Queryable, Identifiable, Associations)]
+#[derive(Queryable, Identifiable, Debug, Associations)]
 #[belongs_to(Category)]
 #[belongs_to(Round)]
 #[table_name="round_category"]
