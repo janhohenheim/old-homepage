@@ -25,5 +25,4 @@ pub struct RoundQuestion {
 pub struct NewRoundQuestion {
     pub round_id: i32,
     pub question_id: i32,
-    pub start_time: NaiveDateTime,
 }

@@ -37,6 +37,17 @@ input:hover + .radio-button {
     background: #ff943e;
 }
 
+.disabled-radio-button {
+    box-sizing: border-box;
+    display: block;
+    border-radius: 13px;
+    border: double;
+    color: white;
+    background: #fff4bf;
+    padding: 10px 15px;
+    text-align: center;
+}
+
 .checkbox-button {
     box-sizing: border-box;
     display: block;

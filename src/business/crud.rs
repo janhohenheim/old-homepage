@@ -5,6 +5,9 @@ use data::model::quiz::category::*;
 use data::model::quiz::player::*;
 use data::model::quiz::question::*;
 use data::model::quiz::answer::*;
+use data::model::quiz::round::*;
+use data::model::quiz::round_category::*;
+use data::model::quiz::round_question::*;
 use data::establish_connection;
 use data::schema;
 use self::diesel::result::{Error, DatabaseErrorKind};
@@ -60,7 +63,7 @@ pub fn get_categories() -> Result<Vec<Category>> {
     let conn = establish_connection();
     category
         .filter(is_active.eq(true))
-        .order(text.asc())
+        .order(id.desc())
         .load::<Category>(&conn)
 }
 
@@ -116,16 +119,22 @@ pub fn get_questions() -> Result<Vec<Question>> {
     let conn = establish_connection();
     question
         .filter(is_active.eq(true))
-        .order(category_id.asc())
+        .order(id.desc())
+        .load::<Question>(&conn)
+}
+
+pub fn get_questions_with_category(cat_id: i32) -> Result<Vec<Question>> {
+    use self::schema::question::dsl::*;
+    let conn = establish_connection();
+    question
+        .filter(is_active.eq(true))
+        .filter(category_id.eq(cat_id))
+        .order(id.desc())
         .load::<Question>(&conn)
 }
 
 pub fn change_question_category(q_id: i32, cat_id: i32) -> Result<Question> {
     let conn = establish_connection();
-    {
-        use self::schema::category::dsl::*;
-        category.find(cat_id).first::<Category>(&conn)?;
-    }
     use self::schema::question::dsl::*;
     diesel::update(question.find(q_id))
         .set(category_id.eq(cat_id))
@@ -158,10 +167,6 @@ pub fn create_answer(a_question_id: i32, a_text: &str, a_is_correct: bool) -> Re
         return Err(Error::DatabaseError(DatabaseErrorKind::__Unknown,
                                         Box::new("Text cannot be empty or too long".to_owned())));
     }
-    {
-        use self::schema::question::dsl::*;
-        question.find(a_question_id).first::<Question>(&conn)?;
-    }
     use self::schema::answer;
     use self::schema::answer::dsl::*;
     let already_created_as = answer.filter(text.eq(a_text))
@@ -182,13 +187,19 @@ pub fn create_answer(a_question_id: i32, a_text: &str, a_is_correct: bool) -> Re
         .get_result(&conn)
 }
 
+pub fn get_answer(a_id: i32) -> Result<Answer> {
+    use self::schema::answer::dsl::*;
+    let conn = establish_connection();
+    answer.find(a_id).first::<Answer>(&conn)
+}
+
 pub fn get_answers(q_id: i32) -> Result<Vec<Answer>> {
     use self::schema::answer::dsl::*;
     let conn = establish_connection();
     answer
         .filter(question_id.eq(q_id))
         .filter(is_active.eq(true))
-        .order(id.asc())
+        .order(id.desc())
         .load::<Answer>(&conn)
 }
 
@@ -212,9 +223,108 @@ pub fn change_answer_correct(a_id: i32, state: bool) -> Result<Answer> {
         .get_result::<Answer>(&conn)
 }
 
+pub fn get_player_rounds(p_id: i32) -> Result<Vec<Round>> {
+    use self::schema::round::dsl::*;
+    let conn = establish_connection();
+    round
+        .filter(player_id.eq(p_id))
+        .order(id.desc())
+        .load::<Round>(&conn)
+}
+
+pub fn create_round(p_id: i32) -> Result<Round> {
+    use self::schema::round;
+    let conn = establish_connection();
+
+    let new_round = NewRound { player_id: p_id };
+    diesel::insert(&new_round)
+        .into(round::table)
+        .get_result(&conn)
+}
+
 pub fn remove_round(score_id: i32) -> Result<bool> {
     use self::schema::round::dsl::*;
     let conn = establish_connection();
     let num_deleted = diesel::delete(round.find(score_id)).execute(&conn)?;
     Ok(num_deleted != 0)
+}
+
+pub fn create_round_category(r_id: i32, cat_id: i32) -> Result<RoundCategory> {
+    use self::schema::round_category;
+    let conn = establish_connection();
+
+    let new_round_category = NewRoundCategory {
+        round_id: r_id,
+        category_id: cat_id,
+    };
+
+    diesel::insert(&new_round_category)
+        .into(round_category::table)
+        .get_result(&conn)
+}
+
+pub fn get_round_categories(r_id: i32) -> Result<Vec<RoundCategory>> {
+    use self::schema::round_category::dsl::*;
+    let conn = establish_connection();
+    round_category
+        .filter(round_id.eq(r_id))
+        .order(id.desc())
+        .load::<RoundCategory>(&conn)
+}
+
+pub fn get_round_categories_joined(r_id: i32) -> Result<Vec<Category>> {
+    use self::schema::round_category;
+    use self::schema::round_category::dsl::*;
+    use self::schema::category;
+    let conn = establish_connection();
+    let data: Vec<(Category, RoundCategory)> = category::table.inner_join(round_category::table)
+        .filter(round_id.eq(r_id))
+        .order(id.desc())
+        .load(&conn)?;
+    let (cats, _): (Vec<Category>, Vec<RoundCategory>) = data.into_iter().unzip();
+    Ok(cats)
+}
+
+pub fn create_round_question(r_id: i32, q_id: i32) -> Result<RoundQuestion> {
+    use self::schema::round_question;
+    let conn = establish_connection();
+
+    let new_round_question = NewRoundQuestion {
+        round_id: r_id,
+        question_id: q_id,
+    };
+
+    diesel::insert(&new_round_question)
+        .into(round_question::table)
+        .get_result(&conn)
+}
+
+pub fn get_round_questions(r_id: i32) -> Result<Vec<RoundQuestion>> {
+    use self::schema::round_question::dsl::*;
+    let conn = establish_connection();
+    round_question
+        .filter(round_id.eq(r_id))
+        .order(id.desc())
+        .load::<RoundQuestion>(&conn)
+}
+
+pub fn get_round_questions_joined(r_id: i32) -> Result<Vec<Question>> {
+    use self::schema::round_question;
+    use self::schema::round_question::dsl::*;
+    use self::schema::question;
+    let conn = establish_connection();
+    let data: Vec<(Question, RoundQuestion)> = question::table.inner_join(round_question::table)
+        .filter(round_id.eq(r_id))
+        .order(id.desc())
+        .load(&conn)?;
+    let (qs, _): (Vec<Question>, Vec<RoundQuestion>) = data.into_iter().unzip();
+    Ok(qs)
+}
+
+pub fn set_joker_user(round_question_id: i32) -> Result<RoundQuestion> {
+    use self::schema::round_question::dsl::*;
+    let conn = establish_connection();
+    diesel::update(round_question.find(round_question_id))
+        .set(is_joker_used.eq(true))
+        .get_result::<RoundQuestion>(&conn)
 }

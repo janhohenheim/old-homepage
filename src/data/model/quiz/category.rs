@@ -1,6 +1,6 @@
 use data::schema::{category, question, round_category};
 
-#[derive(Queryable, Identifiable, Associations)]
+#[derive(Queryable, Identifiable, Debug, Associations)]
 #[has_many(question)]
 #[has_many(round_category)]
 #[table_name="category"]

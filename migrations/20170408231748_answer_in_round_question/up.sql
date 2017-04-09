@@ -1,0 +1,1 @@
+ALTER TABLE round_question add COLUMN answer_id int null REFERENCES answer;

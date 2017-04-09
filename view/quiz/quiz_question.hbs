@@ -9,10 +9,14 @@
                 <div class="row">
                 {{/if-mod}}
                 <div class="col-sm-5">
+                    {{#unless this.is_confirmed_wrong}}
                     <label class="radio-button-wrap">
                         <input type="radio" name="answer" value="{{this.id}}">
                         <span class="radio-button">{{this.text}}</span>
                     </label>
+                    {{else}}
+                        <span class="disabled-radio-button">&nbsp;</span>
+                    {{/unless}}
                 </div>
             {{/each}}
         </div>
