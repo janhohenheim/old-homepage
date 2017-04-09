@@ -16,6 +16,10 @@ use data::model::quiz::answer::Answer;
 type Result<T> = result::Result<T, QuizError>;
 
 
+pub fn is_game_in_progress(player_id: i32) -> Result<bool> {
+    Ok(get_current_round(player_id)?.is_some())
+}
+
 pub fn get_question_and_answers(player_id: i32) -> Result<(Question, Vec<Answer>)> {
     let curr_question = get_current_question(player_id)?
         .ok_or_else(|| QuizError::GameAlreadyFinished)?;
